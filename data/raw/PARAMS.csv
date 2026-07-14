@@ -1,0 +1,53 @@
+Eliminated,ALP,LNP,GRN,ON,IND,OTH,,,,,,
+ALP,0.0,0.07,0.7,0.03,0.1,0.1,1,,,,Primary model,LOGIT_PVI
+LNP,0.05,0.0,0.04,0.61,0.15,0.15,1,,,,,
+GRN,0.78,0.12,,0.02,0.05,0.03,1,,,,Party,a
+ON,0.1,0.62,0.04,0.0,0.2,0.04,1,,,,ALP,1.0
+IND,0.3,0.3,0.28,0.04,0.0,0.08,1,,,,LNP,1.0
+OTH,0.15,0.15,0.2,0.4,0.1,0.0,1,,,,GRN,0.8
+,,,,,,,,,,,ON,0.5
+MinorParty,Uplift,,,,,,,,,,IND,0.7
+GRN,0.08,,,,,,,,,,OTH,0.7
+ON,0.06,,,,,,,,,,,
+IND,0.1,,,,,,,,,,Party,UseLogit
+OTH,0.05,,,,,,,,,,ALP,False
+,,,,,,,,,,,LNP,False
+,,,,,,,,,,,GRN,False
+,,,,,,,,,,,ON,True
+Adjusts preference flows by geography. Positive values increase flow toward that party; negative values reduce it. Applied after ideology but before caps.,,,,,,,,,,,IND,False
+Geography,ALP,LNP,GRN,ON,IND,OTH,,,,,OTH,False
+InnerMetro,0.1,-0.1,0.12,-0.12,0.06,0.0,,,,,,
+OuterMetro,0.04,-0.04,0.02,0.04,0.02,0.0,,,,,,
+Provincial,-0.03,0.03,-0.05,0.06,0.02,0.0,,,,,,
+Rural,-0.06,0.06,-0.1,0.1,0.02,0.0,,,,,,
+,,,,,,,,,,,,
+SMOOTH_LAMBDA,0.1,Weakly blends in the completed (Markov) matrix to smooth sharp edges when AEC data is sparse. Set to 0 to disable smoothing entirely.,,,,,,,,,,
+AEC_PRIOR_BLEND,0.7,How much weight to give seat-specific AEC conditional flows vs ideological priors when estimating unknown preference mass.,,,,,,,,,,
+AEC_PRIOR_K,4.0,How many seats it takes to reach that weight,,,,,,,,,,
+MAJOR_PAIR_MAX,0.9,"Maximum share any party can receive in a final two-candidate (2CP) count, unless overridden by strong AEC evidence.",,,,,,,,,,
+THREE_WAY_MAX,0.8,Maximum share any party can receive in a three-candidate (3CP) scenario to prevent implausible dominance.,,,,,,,,,,
+IND_OTH_MAX,0.75,"Tighter cap applied when IND or OTH are involved, preventing unrealistic landslide flows from minor parties.",,,,,,,,,,
+PRIMARY_TILT_K,0.2,Strength of primary-vote adjustment when allocating preferences between ALP and LNP (bounded by PRIMARY_TILT_MAX).,,,,,,,,,,
+PRIMARY_TILT_MAX,0.03,Hard limit on how much primary-vote differences can move preference flows in either direction.,,,,,,,,,,
+IND_OTH_WEAK_TILT_K,0.3,Weak adjustment for IND/OTH preferences based on GRN vs ON primaries (used instead of LNP primaries to avoid teal distortions).,,,,,,,,,,
+IND_OTH_WEAK_TILT_MAX,0.02,Maximum size of the weak GRN–ON tilt applied to IND or OTH preference flows.,,,,,,,,,,
+IND_TO_GRN_INNERMETROBUMP,0.06,"Extra boost for IND → GRN preference flows in inner-metro seats, reflecting teal–Green voter overlap.",,,,,,,,,,
+IND_TO_GRN_OTHER_BUMP,0.02,Smaller IND → GRN boost applied outside inner-metro seats.,,,,,,,,,,
+MIN_SUPPORT,0.005,Minimum floor applied to all alive parties to prevent zero-probability outcomes and numerical instability.,,,,,,,,,,
+RESERVE_MASS_WHEN_ALIVE_ZERO,0.12,"Forces some preference mass to be allocated by priors when AEC data shows zero flows to still-alive parties, preventing “two-destination collapse”.",,,,,,,,,,
+EMPIRICAL_SHRINKAGE_K,10.0,Controls how strongly small-sample empirical posteriors are shrunk toward the prior.,,,,,,,,,,
+CLASS_SMOOTH_K,50000.0,Smooths posterior scenarios across seat classes (e.g. Inner Metro vs Provincial).,,,,,,,,,,
+SIPHON_STRENGTH,0.35,SIPHON_STRENGTH,,,,,,,,,,
+SIPHON_DONOR_CAP,0.25,Maximum share a donor party can lose to siphoning,,,,,,,,,,
+SIPHON_STRENGTH_ON,0.5,Party-specific siphon aggressiveness,,,,,,,,,,
+SIPHON_STRENGTH_GRN,0.35,,,,,,,,,,,
+SIPHON_STRENGTH_IND,0.25,,,,,,,,,,,
+SIPHON_STRENGTH_OTH,0.2,,,,,,,,,,,
+AEC_BLEND_COV_MIN,0.5,Coverage level where AEC blending begins,,,,,,,,,,
+AEC_BLEND_COV_MAX,0.9,Coverage level where AEC reaches full strength,,,,,,,,,,
+AEC_BLEND_STRENGTH,0.75,Overall multiplier on AEC influence,,,,,,,,,,
+POST_ENTRY_STRENGTH,0.75,Proportion of posterior mass allowed to enter when a party is alive but missing from AEC row,,,,,,,,,,
+AEC_2CP_ANCHOR_ON,0.15,AEC anchor strength when ON is eliminated in a final ALP–LNP count,,,,,,,,,,
+POST_ENTRY_FLOOR,0.15,Hard minimum share given to missing alive parties when posterior parsing yields zero,,,,,,,,,,
+AEC_MISMATCH_MAX,0.3,Maximum allowed AEC anchor weight when the AEC row is missing any alive party,,,,,,,,,,
+AEC_ANCHOR_WHEN_MISSING,0.4,"Baseline AEC weight applied when alive parties are missing, regardless of coverage",,,,,,,,,,

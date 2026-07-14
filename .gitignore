@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.streamlit/
+.venv/
+venv/
+federal_irv_model.xlsx
+.clasp.json

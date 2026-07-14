@@ -1,0 +1,25 @@
+"CHISHOLM
+(VIC)",RAW,,,,,,,,,AliveMask,,,,,,,,"CHISHOLM
+(VIC)",FULL DISTRIBUTION,,,,,,,,"GOLDSTEIN
+(VIC)",RAW,,,,,,,,,AliveMask,,,,,,,,"GOLDSTEIN
+(VIC)",FULL DISTRIBUTION,,,,,
+,ALP,LNP,GRN,ON,IND,OTH,Parties left,,,,,,,,,,,,ALP,LNP,GRN,ON,IND,OTH,,,,ALP,LNP,GRN,ON,IND,OTH,Parties left,,,,,,,,,,,,ALP,LNP,GRN,ON,IND,OTH
+Primary,0.3167621254,0.2644011252,0.146769454,0.5239316107,0.129311581,0.1067990913,6,1.487974988,,True,True,True,True,True,False,,,ROUND 1,0.2128813509,0.1776919151,0.09863704376,0.3521104958,0.08690440505,0.07177478938,,,Primary,0.07586787971,0.3126114698,0.09285002702,0.5001560433,0.3775566468,0.1010789899,1,1.460121057,,False,True,True,True,True,True,,,ROUND 1,0.05098733537,0.2100918849,0.06240026062,0.3361320234,0.2537385708,0.06793057058
+Eliminated,0.1067990913,,OTH,,6,,,,,,,,,,,,,SWING,-0.1744807745,-0.1947092101,-0.0263574102,0.3920788727,0.08689282403,-0.03842430196,,,Eliminated,0.07586787971,,OTH,,1,,,,,,,,,,,,,SWING,-0.08563054434,-0.2251695849,-0.009474766399,0.3712220366,-0.05951807594,-0.05547898991
+,,,,,,,,,,,,,,,,,,ELIMINATED,OTHER,,,0.07177478938,,,,,,,,,,,,,,,,,,,,,,,ELIMINATED,OTHER,,,0.07177478938,,
+,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,,,,,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,
+Round 2,#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 2,#NAME?,,,,,,,,Round 2,#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 2,#NAME?,,,,,
+Eliminated,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,,,,Eliminated,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,
+,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,,,,,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,
+,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,,,,,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,
+Round 3,#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 3,#NAME?,,,,,,,,Round 3,#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 3,#NAME?,,,,,
+Eliminated,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,,,,Eliminated,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,
+,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,,,,,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,
+,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,,,,,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,
+Round 4 (3CP),#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 4,#NAME?,,,,,,,,Round 4 (3CP),#NAME?,,,,,,#N/A,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 4,#NAME?,,,,,
+Eliminated ,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,,,,Eliminated ,#N/A,,#N/A,,#N/A,,,,,,,,,,,,,SWING,,,,,,
+,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,,,,,,,,,,,,,,,,,,,,,,ELIMINATED,#NAME?,,,#NAME?,,
+,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,,,,,,,,,,,,,,,,,,,,,,DISTRIBUTED,#NAME?,,,,,
+Round 5 (2CP),#NAME?,,,,,,2.0,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 5,#NAME?,,,,,,,,Round 5 (2CP),#NAME?,,,,,,2.0,#NAME?,,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,,,ROUND 5,#NAME?,,,,,
+,Primary row,,,,,,,,,,,,,,,,,SWING,#NAME?,,,,,,,,,Primary row,,,,,,,,,,,,,,,,,SWING,#NAME?,,,,,
+,51.0,,,,,,,,,,,,,,,,,RESULT,#NAME?,,,,,,,,,52.0,,,,,,,,,,,,,,,,,RESULT,#NAME?,,,,,

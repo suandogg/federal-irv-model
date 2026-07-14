@@ -13,3 +13,5 @@ pillow==12.2.0
 requests==2.34.2
 tenacity==9.1.4
 toml==0.10.2
+gspread==6.2.1
+google-auth==2.43.0

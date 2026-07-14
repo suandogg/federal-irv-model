@@ -6,3 +6,5 @@ __pycache__/
 venv/
 federal_irv_model.xlsx
 .clasp.json
+credentials.json
+sheet_id.txt

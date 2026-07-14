@@ -10,6 +10,8 @@ import streamlit as st
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.loaders import (
+    load_baseline_primary_by_state,
+    load_district_2cp_swing,
     load_params,
     load_preference_matrices,
     load_projected_2cp,
@@ -100,7 +102,17 @@ def load_static_inputs():
     params = load_params()
     projected_2cp = load_projected_2cp()
     sheet_baseline_results = load_sheet_baseline_results()
-    return seats, matrices, params, projected_2cp, sheet_baseline_results
+    baseline_primary_by_state = load_baseline_primary_by_state()
+    district_2cp_swing = load_district_2cp_swing()
+    return (
+        seats,
+        matrices,
+        params,
+        projected_2cp,
+        sheet_baseline_results,
+        baseline_primary_by_state,
+        district_2cp_swing,
+    )
 
 
 def aggregate_primary(seats):
@@ -143,6 +155,47 @@ def apply_sheet_baseline_results(results, sheet_results):
     return merged
 
 
+def add_district_2cp_swing(results, sheet_results, district_swings):
+    if sheet_results.empty or district_swings.empty:
+        results["district_2cp_swing"] = pd.NA
+        return results
+
+    cols = [
+        "division_key",
+        "sheet_winner",
+        "sheet_winner_pct",
+        "sheet_final_two",
+    ]
+    merged = (
+        results
+        .merge(sheet_results[cols], on="division_key", how="left")
+        .merge(district_swings, on="division_key", how="left")
+    )
+
+    comparable = (
+        merged["district_2cp_swing"].notna()
+        & (merged["winner"] == merged["sheet_winner"])
+        & (merged["final_two"] == merged["sheet_final_two"])
+    )
+    merged.loc[comparable, "district_2cp_swing"] = (
+        merged.loc[comparable, "district_2cp_swing"]
+        + (
+            merged.loc[comparable, "winner_pct"]
+            - merged.loc[comparable, "sheet_winner_pct"]
+        ) * 100
+    )
+    merged.loc[~comparable, "district_2cp_swing"] = pd.NA
+
+    return merged.drop(
+        columns=[
+            "sheet_winner",
+            "sheet_winner_pct",
+            "sheet_final_two",
+        ],
+        errors="ignore",
+    )
+
+
 def render_table(df):
     st.dataframe(
         df.style.map(party_cell_style, subset=[c for c in ["Party", "winner", "runner_up"] if c in df.columns]),
@@ -164,6 +217,7 @@ def render_result_table(df):
         column_config={
             "Winner 2CP %": st.column_config.NumberColumn(format="%.2f%%"),
             "Runner-up 2CP %": st.column_config.NumberColumn(format="%.2f%%"),
+            "2CP Swing %": st.column_config.NumberColumn(format="%.2f%%"),
         },
     )
 
@@ -171,7 +225,15 @@ def render_result_table(df):
 st.set_page_config(page_title="Federal IRV Model", layout="wide")
 st.title("Federal IRV Election Model")
 
-seats, matrices, params, projected_2cp, sheet_baseline_results = load_static_inputs()
+(
+    seats,
+    matrices,
+    params,
+    projected_2cp,
+    sheet_baseline_results,
+    baseline_primary_by_state,
+    district_2cp_swing,
+) = load_static_inputs()
 raw_primary = aggregate_primary(seats)
 default_primary = DEFAULT_SCENARIO_PRIMARY
 
@@ -209,6 +271,7 @@ results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_cali
 baseline_exact = apply_calibration and is_default_scenario(targets, raw_primary)
 if baseline_exact:
     results_df = apply_sheet_baseline_results(results_df, sheet_baseline_results)
+results_df = add_district_2cp_swing(results_df, sheet_baseline_results, district_2cp_swing)
 
 if selected_state != "National":
     view_results = results_df[results_df["state"] == selected_state].copy()
@@ -219,12 +282,16 @@ else:
 
 st.subheader(f"{selected_state} Primary Vote")
 view_primary = aggregate_primary(view_seats)
+baseline_primary = baseline_primary_by_state.get(
+    selected_state,
+    baseline_primary_by_state.get("National", raw_primary),
+)
 primary_df = pd.DataFrame(
     [
         {
             "Party": PARTY_LABELS[party],
             "Primary Vote %": view_primary[party],
-            "Swing From Raw Baseline %": view_primary[party] - raw_primary[party],
+            "Swing %": view_primary[party] - baseline_primary.get(party, 0.0),
         }
         for party in PARTIES
     ]
@@ -235,7 +302,7 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Primary Vote %": st.column_config.NumberColumn(format="%.2f%%"),
-        "Swing From Raw Baseline %": st.column_config.NumberColumn(format="%.2f%%"),
+        "Swing %": st.column_config.NumberColumn(format="%.2f%%"),
     },
 )
 
@@ -325,19 +392,21 @@ display_cols = [
     "runner_up",
     "winner_pct",
     "runner_up_pct",
+    "district_2cp_swing",
     "final_two",
     "elimination_order",
 ]
 display_df = view_results[display_cols].copy()
 display_df["Winner 2CP %"] = display_df["winner_pct"] * 100
 display_df["Runner-up 2CP %"] = display_df["runner_up_pct"] * 100
+display_df["2CP Swing %"] = display_df["district_2cp_swing"]
 display_df["2nd"] = display_df["runner_up"]
 for position in ["3rd", "4th", "5th", "6th"]:
     display_df[position] = display_df.apply(
         lambda row, pos=position: elimination_position(row, pos),
         axis=1,
     )
-display_df = display_df.drop(columns=["winner_pct", "runner_up_pct"])
+display_df = display_df.drop(columns=["winner_pct", "runner_up_pct", "district_2cp_swing"])
 display_df = display_df[
     [
         "division",
@@ -348,6 +417,7 @@ display_df = display_df[
         "runner_up",
         "Winner 2CP %",
         "Runner-up 2CP %",
+        "2CP Swing %",
         "2nd",
         "3rd",
         "4th",

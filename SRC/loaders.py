@@ -164,6 +164,67 @@ def load_sheet_baseline_results() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
+    path = RAW_DIR / "BASELINE_PRIMARY_BY_STATE.csv"
+    if not path.exists():
+        return {}
+
+    df = pd.read_csv(path)
+    if "State" not in df.columns:
+        return {}
+
+    out = {}
+    for _, row in df.iterrows():
+        state = str(row.get("State") or "").strip()
+        if not state:
+            continue
+        key = "National" if state.upper() == "NATIONAL" else state.upper()
+        out[key] = {party: _to_float(row.get(party)) for party in PARTIES}
+    return out
+
+
+def load_district_2cp_swing() -> pd.DataFrame:
+    path = RAW_DIR / "PRIMARY_ELECTION_MODEL.csv"
+    if not path.exists():
+        return pd.DataFrame()
+
+    rows = {}
+    with path.open(newline="") as handle:
+        reader = csv.reader(handle)
+        for row in reader:
+            for idx, cell in enumerate(row):
+                if idx + 16 >= len(row):
+                    continue
+
+                division = _normalise_division(cell)
+                if not division or division.upper() == "DIVISION":
+                    continue
+
+                swing = _to_float(row[idx + 16], default=None)
+                if swing is None:
+                    continue
+
+                try:
+                    alp_2cp = float(row[idx + 14] or 0)
+                    other_2cp = float(row[idx + 15] or 0)
+                except (TypeError, ValueError):
+                    continue
+
+                if alp_2cp <= 0 and other_2cp <= 0:
+                    continue
+
+                key = division_key(division)
+                rows.setdefault(
+                    key,
+                    {
+                        "division_key": key,
+                        "district_2cp_swing": swing * 100,
+                    },
+                )
+
+    return pd.DataFrame(rows.values())
+
+
 def load_params() -> dict:
     param_df = _read_csv("PARAMS.csv", header=None)
     scalars = {}

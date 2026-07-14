@@ -30,6 +30,15 @@ BASELINE_2PP = {
     "NT": {"ALP": 53.51, "LNP": 46.49},
 }
 
+DEFAULT_SCENARIO_PRIMARY = {
+    "ALP": 34.56,
+    "LNP": 31.82,
+    "GRN": 12.20,
+    "ON": 6.40,
+    "IND": 7.27,
+    "OTH": 7.75,
+}
+
 
 def party_cell_style(value):
     parts = str(value).split()
@@ -163,7 +172,8 @@ st.set_page_config(page_title="Federal IRV Model", layout="wide")
 st.title("Federal IRV Election Model")
 
 seats, matrices, params, projected_2cp, sheet_baseline_results = load_static_inputs()
-default_primary = aggregate_primary(seats)
+raw_primary = aggregate_primary(seats)
+default_primary = DEFAULT_SCENARIO_PRIMARY
 
 st.subheader("Scenario Inputs")
 
@@ -196,7 +206,7 @@ apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
 adjusted_seats = apply_statewide_primary_adjustment(seats, targets)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
-baseline_exact = apply_calibration and is_default_scenario(targets, default_primary)
+baseline_exact = apply_calibration and is_default_scenario(targets, raw_primary)
 if baseline_exact:
     results_df = apply_sheet_baseline_results(results_df, sheet_baseline_results)
 
@@ -214,7 +224,7 @@ primary_df = pd.DataFrame(
         {
             "Party": PARTY_LABELS[party],
             "Primary Vote %": view_primary[party],
-            "Swing From Default %": view_primary[party] - default_primary[party],
+            "Swing From Raw Baseline %": view_primary[party] - raw_primary[party],
         }
         for party in PARTIES
     ]
@@ -225,7 +235,7 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Primary Vote %": st.column_config.NumberColumn(format="%.2f%%"),
-        "Swing From Default %": st.column_config.NumberColumn(format="%.2f%%"),
+        "Swing From Raw Baseline %": st.column_config.NumberColumn(format="%.2f%%"),
     },
 )
 

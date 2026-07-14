@@ -80,7 +80,7 @@ def sync_sheet(sheet_id: str, only_tabs: set[str] | None = None) -> None:
             worksheet = sheet.worksheet(tab_name)
             df = worksheet_to_dataframe(worksheet)
             out_path = DATA_DIR / csv_filename
-            df.to_csv(out_path, index=False, header=False)
+            df.to_csv(out_path, index=False, header=False, lineterminator="\r\n")
             print(f"  ✓  {tab_name} -> data/raw/{csv_filename} ({len(df)} rows)")
         except Exception as exc:
             print(f"  x  {tab_name} - error: {exc}")

@@ -211,12 +211,12 @@ def trace_baseline_stage(row):
     return "primary"
 
 
-def add_trace_swings(seat_trace, selected_division, baseline_results_by_seat):
+def add_trace_swings(seat_trace, selected_division_key, baseline_results_by_seat):
     seat_trace = seat_trace.copy()
     seat_trace["baseline_stage"] = seat_trace.apply(trace_baseline_stage, axis=1)
 
     baseline = baseline_results_by_seat[
-        baseline_results_by_seat["division"].eq(selected_division)
+        baseline_results_by_seat["division_key"].eq(selected_division_key)
     ]
     if baseline.empty:
         for party in PARTIES:
@@ -493,6 +493,29 @@ for party in PARTIES:
         seat_trace[flow_col] = seat_trace[flow_col] * 100
 
 selected_result = results_df[results_df["division"] == selected_division].iloc[0]
+selected_division_key = selected_result["division_key"]
+
+seat_profile = selected_result[
+    [
+        "division",
+        "state",
+        "classification",
+        "held_party",
+        "current_mp",
+        "current_margin",
+        "notes",
+    ]
+].copy()
+profile_cols = st.columns(4)
+profile_cols[0].metric("State", seat_profile.get("state") or "-")
+profile_cols[1].metric("Classification", seat_profile.get("classification") or "-")
+profile_cols[2].metric("Held by", seat_profile.get("held_party") or selected_result.get("held_by") or "-")
+profile_cols[3].metric("Current margin", seat_profile.get("current_margin") or "-")
+if seat_profile.get("current_mp"):
+    st.markdown(f"**Current MP:** {seat_profile['current_mp']}")
+if seat_profile.get("notes"):
+    st.markdown(str(seat_profile["notes"]))
+
 final_trace_row = {
     "round": "Final",
     "eliminated": "",
@@ -507,7 +530,7 @@ for party in PARTIES:
     final_trace_row[party] = selected_result.get(f"{party}_final", 0.0) * 100
     final_trace_row[f"{party}_flow"] = pd.NA
 seat_trace = pd.concat([seat_trace, pd.DataFrame([final_trace_row])], ignore_index=True)
-seat_trace = add_trace_swings(seat_trace, selected_division, baseline_results_by_seat)
+seat_trace = add_trace_swings(seat_trace, selected_division_key, baseline_results_by_seat)
 seat_trace["round"] = seat_trace["round"].astype(str)
 
 trace_columns = [

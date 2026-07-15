@@ -53,14 +53,31 @@ def load_seat_metadata() -> pd.DataFrame:
 
     df = df[df["division"].notna()].copy()
     df["division"] = df["division"].map(_normalise_division)
+    df["canonical_division"] = df["division"]
     df["division_key"] = df["division"].map(division_key)
 
-    classification = load_classification()
+    classification = load_seat_helper()
     df = df.merge(
-        classification[["division_key", "state", "held_by"]],
+        classification[
+            [
+                "division_key",
+                "display_name",
+                "state",
+                "classification_helper",
+                "held_party",
+                "held_by",
+                "current_mp",
+                "current_margin",
+                "notes",
+            ]
+        ],
         on="division_key",
         how="left",
     )
+    df["display_name"] = df["display_name"].fillna(df["division"])
+    df["classification"] = df["classification_helper"].fillna(df["classification"])
+    df = df.drop(columns=["classification_helper"])
+    df["division"] = df["display_name"]
 
     for party in PARTIES:
         df[party] = df[party].map(_to_float)
@@ -106,6 +123,66 @@ def load_classification() -> pd.DataFrame:
     df["state"] = df["state"].astype(str).str.strip().str.upper()
     df["held_by"] = df["held_party"].map(_normalise_held_party)
     return df
+
+
+def load_seat_helper() -> pd.DataFrame:
+    path = RAW_DIR / "SEAT_HELPER.csv"
+    if not path.exists():
+        fallback = load_classification()
+        fallback["display_name"] = fallback["division"]
+        fallback["classification_helper"] = fallback["classification"]
+        fallback["current_mp"] = ""
+        fallback["current_margin"] = ""
+        fallback["notes"] = ""
+        return fallback
+
+    df = pd.read_csv(path)
+    df = df.rename(
+        columns={
+            "Division": "division",
+            "Display Name": "display_name",
+            "State": "state",
+            "Classification": "classification_helper",
+            "Held party": "held_party",
+            "Current MP": "current_mp",
+            "Current margin": "current_margin",
+            "Notes": "notes",
+        }
+    )
+    df = df[df["division"].notna()].copy()
+    df["division"] = df["division"].map(_normalise_division)
+    df["division_key"] = df["division"].map(division_key)
+
+    def text_col(column: str, default: str = "") -> pd.Series:
+        if column in df.columns:
+            return df[column].fillna("").astype(str).str.strip()
+        return pd.Series(default, index=df.index, dtype="object")
+
+    df["display_name"] = text_col("display_name")
+    df.loc[df["display_name"].eq(""), "display_name"] = df.loc[df["display_name"].eq(""), "division"]
+    df["display_name"] = df["display_name"].map(_normalise_division)
+    df["state"] = text_col("state").str.upper()
+    df["classification_helper"] = text_col("classification_helper")
+    df["held_party"] = text_col("held_party")
+    df["held_by"] = df["held_party"].map(_normalise_held_party)
+    df["current_mp"] = text_col("current_mp")
+    df["current_margin"] = text_col("current_margin")
+    df["notes"] = text_col("notes")
+
+    return df[
+        [
+            "division",
+            "division_key",
+            "display_name",
+            "state",
+            "classification_helper",
+            "held_party",
+            "held_by",
+            "current_mp",
+            "current_margin",
+            "notes",
+        ]
+    ]
 
 
 def load_projected_2cp() -> pd.DataFrame:
@@ -179,7 +256,10 @@ def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
         if not state:
             continue
         key = "National" if state.upper() == "NATIONAL" else state.upper()
-        out[key] = {party: _to_float(row.get(party)) for party in PARTIES}
+        out[key] = {
+            party: _to_float(row.get(f"{party}_primary", row.get(party)))
+            for party in PARTIES
+        }
     return out
 
 

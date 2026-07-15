@@ -64,6 +64,7 @@ def load_seat_metadata() -> pd.DataFrame:
                 "display_name",
                 "state",
                 "classification_helper",
+                "status",
                 "held_party",
                 "held_by",
                 "current_mp",
@@ -75,6 +76,8 @@ def load_seat_metadata() -> pd.DataFrame:
         how="left",
     )
     df["display_name"] = df["display_name"].fillna(df["division"])
+    df["status"] = df["status"].fillna("Active")
+    df = df[df["status"].str.upper().ne("ABOLISHED")].copy()
     df["classification"] = df["classification_helper"].fillna(df["classification"])
     df = df.drop(columns=["classification_helper"])
     df["division"] = df["display_name"]
@@ -131,6 +134,7 @@ def load_seat_helper() -> pd.DataFrame:
         fallback = load_classification()
         fallback["display_name"] = fallback["division"]
         fallback["classification_helper"] = fallback["classification"]
+        fallback["status"] = "Active"
         fallback["current_mp"] = ""
         fallback["current_margin"] = ""
         fallback["notes"] = ""
@@ -143,6 +147,7 @@ def load_seat_helper() -> pd.DataFrame:
             "Display Name": "display_name",
             "State": "state",
             "Classification": "classification_helper",
+            "Status": "status",
             "Held party": "held_party",
             "Current MP": "current_mp",
             "Current margin": "current_margin",
@@ -163,6 +168,9 @@ def load_seat_helper() -> pd.DataFrame:
     df["display_name"] = df["display_name"].map(_normalise_division)
     df["state"] = text_col("state").str.upper()
     df["classification_helper"] = text_col("classification_helper")
+    df["status"] = text_col("status", "Active")
+    df.loc[df["status"].eq(""), "status"] = "Active"
+    df["status"] = df["status"].str.title()
     df["held_party"] = text_col("held_party")
     df["held_by"] = df["held_party"].map(_normalise_held_party)
     df["current_mp"] = text_col("current_mp")
@@ -176,6 +184,7 @@ def load_seat_helper() -> pd.DataFrame:
             "display_name",
             "state",
             "classification_helper",
+            "status",
             "held_party",
             "held_by",
             "current_mp",
@@ -361,6 +370,7 @@ def load_params() -> dict:
 
     return {
         "scalars": scalars,
+        "primary_model": load_primary_model_params(param_df),
         "baselines": {
             "LNP_TO_ON": {
                 "NSW": 0.743,
@@ -378,6 +388,37 @@ def load_params() -> dict:
         "siphon": load_siphon(),
         "ideology": load_ideology(),
     }
+
+
+def load_primary_model_params(param_df: pd.DataFrame) -> dict:
+    out = {
+        "a": {party: 1.0 for party in PARTIES},
+        "use_logit": {party: False for party in PARTIES},
+    }
+
+    for row_idx in range(param_df.shape[0]):
+        for col_idx in range(max(param_df.shape[1] - 1, 0)):
+            left = str(param_df.iat[row_idx, col_idx] or "").strip().upper()
+            right = str(param_df.iat[row_idx, col_idx + 1] or "").strip().upper()
+            if left != "PARTY":
+                continue
+
+            if right == "A":
+                for value_idx in range(row_idx + 1, param_df.shape[0]):
+                    party = str(param_df.iat[value_idx, col_idx] or "").strip().upper()
+                    if party not in PARTIES:
+                        break
+                    out["a"][party] = _to_float(param_df.iat[value_idx, col_idx + 1], default=out["a"][party])
+
+            if right == "USELOGIT":
+                for value_idx in range(row_idx + 1, param_df.shape[0]):
+                    party = str(param_df.iat[value_idx, col_idx] or "").strip().upper()
+                    if party not in PARTIES:
+                        break
+                    raw = str(param_df.iat[value_idx, col_idx + 1] or "").strip().upper()
+                    out["use_logit"][party] = raw in {"TRUE", "YES", "1", "Y"}
+
+    return out
 
 
 def load_lnp_to_on_by_seat() -> dict[str, float]:

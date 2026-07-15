@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 import pandas as pd
 
 from .constants import PARTIES
@@ -86,6 +88,7 @@ def run_irv_for_seat(
         "canonical_division": seat_row.get("canonical_division", division),
         "state": state,
         "classification": seat_row.get("classification", ""),
+        "status": seat_row.get("status", "Active"),
         "held_by": seat_row.get("held_by", ""),
         "held_party": seat_row.get("held_party", ""),
         "current_mp": seat_row.get("current_mp", ""),
@@ -204,6 +207,7 @@ def apply_statewide_primary_adjustment(
     seats: pd.DataFrame,
     targets: dict[str, float],
     partisan_vote_index: pd.DataFrame | None = None,
+    params: dict | None = None,
     iterations: int = 8,
 ) -> pd.DataFrame:
     adjusted = seats.copy()
@@ -214,6 +218,24 @@ def apply_statewide_primary_adjustment(
         for party in PARTIES
     }
 
+    primary_model = (params or {}).get("primary_model", {})
+    model_a = primary_model.get("a", {})
+    use_logit = primary_model.get("use_logit", {})
+
+    def clamp_share(value: float) -> float:
+        return min(max(value, 1e-9), 1.0 - 1e-9)
+
+    def logit(value: float) -> float:
+        value = clamp_share(value)
+        return math.log(value / (1.0 - value))
+
+    def inv_logit(value: float) -> float:
+        if value >= 0:
+            z = math.exp(-value)
+            return 1.0 / (1.0 + z)
+        z = math.exp(value)
+        return z / (1.0 + z)
+
     if partisan_vote_index is not None and not partisan_vote_index.empty:
         pvi = partisan_vote_index.set_index("division_key")
         for idx, row in adjusted.iterrows():
@@ -223,8 +245,12 @@ def apply_statewide_primary_adjustment(
 
             raw_values = {}
             for party in PARTIES:
-                index = float(pvi.at[div_key, party]) if party in pvi.columns else 0.0
-                raw_values[party] = target_shares[party] * max(index, 0.0)
+                pvi_value = float(pvi.at[div_key, party]) if party in pvi.columns else 0.0
+                strength = float(model_a.get(party, 1.0))
+                if bool(use_logit.get(party, False)):
+                    raw_values[party] = inv_logit(logit(target_shares[party]) + strength * pvi_value)
+                else:
+                    raw_values[party] = max(target_shares[party] + strength * pvi_value, 0.0)
 
             raw_total = sum(raw_values.values())
             if raw_total > 0:

@@ -1,7 +1,7 @@
 sheet_name,csv_file,rows,cols
 Checklist,Checklist.csv,14,55
 Classification,Classification.csv,151,5
-SEAT_HELPER,SEAT_HELPER.csv,150,9
+SEAT_HELPER,SEAT_HELPER.csv,151,10
 PENDULUM (25-28),PENDULUM_25-28.csv,97,11
 "ELECTION CALC (2PP, 2028)",ELECTION_CALC_2PP_2028.csv,277,19
 PREF FLOWS,PREF_FLOWS.csv,23,6

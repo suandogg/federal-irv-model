@@ -309,7 +309,7 @@ if abs(total_primary - 100.0) > 0.01:
 selected_state = st.selectbox("View", ["National", *STATE_ORDER], index=0)
 apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
-adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index)
+adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index, params=params)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
 baseline_exact = apply_calibration and is_default_scenario(targets, raw_primary)
 if baseline_exact:
@@ -500,17 +500,19 @@ seat_profile = selected_result[
         "division",
         "state",
         "classification",
+        "status",
         "held_party",
         "current_mp",
         "current_margin",
         "notes",
     ]
 ].copy()
-profile_cols = st.columns(4)
+profile_cols = st.columns(5)
 profile_cols[0].metric("State", seat_profile.get("state") or "-")
 profile_cols[1].metric("Classification", seat_profile.get("classification") or "-")
-profile_cols[2].metric("Held by", seat_profile.get("held_party") or selected_result.get("held_by") or "-")
-profile_cols[3].metric("Current margin", seat_profile.get("current_margin") or "-")
+profile_cols[2].metric("Status", seat_profile.get("status") or "-")
+profile_cols[3].metric("Held by", seat_profile.get("held_party") or selected_result.get("held_by") or "-")
+profile_cols[4].metric("Current margin", seat_profile.get("current_margin") or "-")
 if seat_profile.get("current_mp"):
     st.markdown(f"**Current MP:** {seat_profile['current_mp']}")
 if seat_profile.get("notes"):

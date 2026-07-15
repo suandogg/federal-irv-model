@@ -127,40 +127,6 @@ def aggregate_primary(seats):
     return {party: totals[party] / total * 100 if total > 0 else 0.0 for party in PARTIES}
 
 
-def is_default_scenario(targets, defaults):
-    return all(abs(float(targets[party]) - round(defaults[party], 2)) < 0.005 for party in PARTIES)
-
-
-def apply_sheet_baseline_results(results, sheet_results):
-    if sheet_results.empty:
-        return results
-
-    merged = results.merge(sheet_results, on="division_key", how="left")
-    has_sheet = merged["sheet_winner"].notna()
-    for column, sheet_column in [
-        ("winner", "sheet_winner"),
-        ("runner_up", "sheet_runner_up"),
-        ("winner_pct", "sheet_winner_pct"),
-        ("runner_up_pct", "sheet_runner_up_pct"),
-        ("final_two", "sheet_final_two"),
-    ]:
-        merged.loc[has_sheet, column] = merged.loc[has_sheet, sheet_column]
-
-    for party in PARTIES:
-        final_col = f"{party}_final"
-        sheet_col = f"sheet_{party}_final"
-        merged.loc[has_sheet, final_col] = merged.loc[has_sheet, sheet_col]
-
-    drop_cols = [
-        col for col in merged.columns
-        if col.startswith("sheet_") or col == "division_y"
-    ]
-    merged = merged.drop(columns=drop_cols)
-    if "division_x" in merged.columns:
-        merged = merged.rename(columns={"division_x": "division"})
-    return merged
-
-
 def add_district_2cp_swing(results, sheet_results, district_swings):
     if sheet_results.empty or district_swings.empty:
         results["district_2cp_swing"] = pd.NA
@@ -311,9 +277,6 @@ apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
 adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index, params=params)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
-baseline_exact = apply_calibration and is_default_scenario(targets, raw_primary)
-if baseline_exact:
-    results_df = apply_sheet_baseline_results(results_df, sheet_baseline_results)
 results_df = add_district_2cp_swing(results_df, sheet_baseline_results, district_2cp_swing)
 
 if selected_state != "National":

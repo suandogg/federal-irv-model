@@ -285,7 +285,7 @@ def load_baseline_results_by_seat() -> pd.DataFrame:
     df["division"] = df["division"].map(_normalise_division)
     df["division_key"] = df["division"].map(division_key)
 
-    for stage in ["primary", "3CP", "2CP"]:
+    for stage in ["primary", "3CP", "2CP", "2PP"]:
         for party in PARTIES:
             col = f"{party}_{stage}"
             if col in df.columns:

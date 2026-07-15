@@ -1,0 +1,15 @@
+metric,value
+seats_compared,150.0
+winner_matches,150.0
+runner_up_matches,148.0
+final_two_matches,146.0
+within_0_01pp,120.0
+within_0_10pp,124.0
+within_0_50pp,138.0
+mean_abs_winner_diff_pp,0.2707122618615544
+max_abs_winner_diff_pp,15.043847005277888
+reason_matches_original_sheet,120.0
+reason_calibration_path_difference,19.0
+reason_old_sheet_marked_inconsistent,7.0
+reason_original_sheet_export_not_true_2cp,2.0
+reason_vote_total_difference_only,2.0

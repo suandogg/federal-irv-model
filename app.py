@@ -14,6 +14,7 @@ from SRC.loaders import (
     load_baseline_results_by_seat,
     load_district_2cp_swing,
     load_params,
+    load_partisan_vote_index,
     load_preference_matrices,
     load_projected_2cp,
     load_seat_metadata,
@@ -105,6 +106,7 @@ def load_static_inputs():
     sheet_baseline_results = load_sheet_baseline_results()
     baseline_primary_by_state = load_baseline_primary_by_state()
     baseline_results_by_seat = load_baseline_results_by_seat()
+    partisan_vote_index = load_partisan_vote_index()
     district_2cp_swing = load_district_2cp_swing()
     return (
         seats,
@@ -114,6 +116,7 @@ def load_static_inputs():
         sheet_baseline_results,
         baseline_primary_by_state,
         baseline_results_by_seat,
+        partisan_vote_index,
         district_2cp_swing,
     )
 
@@ -271,6 +274,7 @@ st.title("Federal IRV Election Model")
     sheet_baseline_results,
     baseline_primary_by_state,
     baseline_results_by_seat,
+    partisan_vote_index,
     district_2cp_swing,
 ) = load_static_inputs()
 raw_primary = aggregate_primary(seats)
@@ -305,7 +309,7 @@ if abs(total_primary - 100.0) > 0.01:
 selected_state = st.selectbox("View", ["National", *STATE_ORDER], index=0)
 apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
-adjusted_seats = apply_statewide_primary_adjustment(seats, targets)
+adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
 baseline_exact = apply_calibration and is_default_scenario(targets, raw_primary)
 if baseline_exact:

@@ -205,6 +205,26 @@ def load_baseline_results_by_seat() -> pd.DataFrame:
     return df
 
 
+def load_partisan_vote_index() -> pd.DataFrame:
+    path = RAW_DIR / "PARTISAN_VOTE_INDEX.csv"
+    if not path.exists():
+        return pd.DataFrame()
+
+    df = pd.read_csv(path)
+    if "Division" not in df.columns:
+        return pd.DataFrame()
+
+    df = df.rename(columns={"Division": "division", "State": "state"})
+    df["division"] = df["division"].map(_normalise_division)
+    df["division_key"] = df["division"].map(division_key)
+
+    for party in PARTIES:
+        if party in df.columns:
+            df[party] = df[party].map(_to_float)
+
+    return df[["division", "division_key", *[party for party in PARTIES if party in df.columns]]]
+
+
 def load_district_2cp_swing() -> pd.DataFrame:
     path = RAW_DIR / "PRIMARY_ELECTION_MODEL.csv"
     if not path.exists():

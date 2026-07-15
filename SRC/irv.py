@@ -198,6 +198,7 @@ def run_irv_all(
 def apply_statewide_primary_adjustment(
     seats: pd.DataFrame,
     targets: dict[str, float],
+    partisan_vote_index: pd.DataFrame | None = None,
     iterations: int = 8,
 ) -> pd.DataFrame:
     adjusted = seats.copy()
@@ -207,6 +208,23 @@ def apply_statewide_primary_adjustment(
         party: (targets.get(party, 0.0) / target_total if target_total > 0 else 0.0)
         for party in PARTIES
     }
+
+    if partisan_vote_index is not None and not partisan_vote_index.empty:
+        pvi = partisan_vote_index.set_index("division_key")
+        for idx, row in adjusted.iterrows():
+            div_key = row.get("division_key")
+            if div_key not in pvi.index:
+                continue
+
+            raw_values = {}
+            for party in PARTIES:
+                index = float(pvi.at[div_key, party]) if party in pvi.columns else 0.0
+                raw_values[party] = target_shares[party] * max(index, 0.0)
+
+            raw_total = sum(raw_values.values())
+            if raw_total > 0:
+                for party in PARTIES:
+                    adjusted.at[idx, party] = raw_values[party] / raw_total
 
     for _ in range(iterations):
         current_totals = {party: adjusted[party].sum() for party in PARTIES}

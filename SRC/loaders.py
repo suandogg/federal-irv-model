@@ -183,6 +183,28 @@ def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
     return out
 
 
+def load_baseline_results_by_seat() -> pd.DataFrame:
+    path = RAW_DIR / "BASELINE_RESULTS_BY_SEAT.csv"
+    if not path.exists():
+        return pd.DataFrame()
+
+    df = pd.read_csv(path)
+    if "Division" not in df.columns:
+        return pd.DataFrame()
+
+    df = df.rename(columns={"Division": "division", "State": "state"})
+    df["division"] = df["division"].map(_normalise_division)
+    df["division_key"] = df["division"].map(division_key)
+
+    for stage in ["primary", "3CP", "2CP"]:
+        for party in PARTIES:
+            col = f"{party}_{stage}"
+            if col in df.columns:
+                df[col] = df[col].map(_to_float)
+
+    return df
+
+
 def load_district_2cp_swing() -> pd.DataFrame:
     path = RAW_DIR / "PRIMARY_ELECTION_MODEL.csv"
     if not path.exists():

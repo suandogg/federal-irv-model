@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
 
-SRC_DIR = Path(__file__).resolve().parent / "SRC"
-sys.path.append(str(SRC_DIR))
+ROOT_DIR = Path(__file__).resolve().parent
+sys.path.append(str(ROOT_DIR))
 
 import pandas as pd
 import streamlit as st
@@ -11,6 +11,7 @@ from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.loaders import (
     load_baseline_primary_by_state,
+    load_baseline_results_by_seat,
     load_district_2cp_swing,
     load_params,
     load_preference_matrices,
@@ -103,6 +104,7 @@ def load_static_inputs():
     projected_2cp = load_projected_2cp()
     sheet_baseline_results = load_sheet_baseline_results()
     baseline_primary_by_state = load_baseline_primary_by_state()
+    baseline_results_by_seat = load_baseline_results_by_seat()
     district_2cp_swing = load_district_2cp_swing()
     return (
         seats,
@@ -111,6 +113,7 @@ def load_static_inputs():
         projected_2cp,
         sheet_baseline_results,
         baseline_primary_by_state,
+        baseline_results_by_seat,
         district_2cp_swing,
     )
 
@@ -196,6 +199,41 @@ def add_district_2cp_swing(results, sheet_results, district_swings):
     )
 
 
+def trace_baseline_stage(row):
+    alive_count = sum(1 for party in PARTIES if float(row.get(party, 0.0) or 0.0) > 1e-9)
+    if alive_count <= 2:
+        return "2CP"
+    if alive_count == 3:
+        return "3CP"
+    return "primary"
+
+
+def add_trace_swings(seat_trace, selected_division, baseline_results_by_seat):
+    seat_trace = seat_trace.copy()
+    seat_trace["baseline_stage"] = seat_trace.apply(trace_baseline_stage, axis=1)
+
+    baseline = baseline_results_by_seat[
+        baseline_results_by_seat["division"].eq(selected_division)
+    ]
+    if baseline.empty:
+        for party in PARTIES:
+            seat_trace[f"{party}_swing"] = pd.NA
+        return seat_trace
+
+    baseline_row = baseline.iloc[0]
+    for party in PARTIES:
+        swing_col = f"{party}_swing"
+        seat_trace[swing_col] = seat_trace.apply(
+            lambda row, p=party: (
+                row[p] - baseline_row.get(f"{p}_{row['baseline_stage']}", 0.0)
+                if p in row and pd.notna(row[p])
+                else pd.NA
+            ),
+            axis=1,
+        )
+    return seat_trace
+
+
 def render_table(df):
     st.dataframe(
         df.style.map(party_cell_style, subset=[c for c in ["Party", "winner", "runner_up"] if c in df.columns]),
@@ -232,6 +270,7 @@ st.title("Federal IRV Election Model")
     projected_2cp,
     sheet_baseline_results,
     baseline_primary_by_state,
+    baseline_results_by_seat,
     district_2cp_swing,
 ) = load_static_inputs()
 raw_primary = aggregate_primary(seats)
@@ -449,16 +488,36 @@ for party in PARTIES:
     if flow_col in seat_trace.columns:
         seat_trace[flow_col] = seat_trace[flow_col] * 100
 
+selected_result = results_df[results_df["division"] == selected_division].iloc[0]
+final_trace_row = {
+    "round": "Final",
+    "eliminated": "",
+    "transfer": pd.NA,
+    "alive_after": selected_result["final_two"],
+    "basis": "final_2cp",
+    "coverage": pd.NA,
+    "anchor_weight": pd.NA,
+    "missing": "",
+}
+for party in PARTIES:
+    final_trace_row[party] = selected_result.get(f"{party}_final", 0.0) * 100
+    final_trace_row[f"{party}_flow"] = pd.NA
+seat_trace = pd.concat([seat_trace, pd.DataFrame([final_trace_row])], ignore_index=True)
+seat_trace = add_trace_swings(seat_trace, selected_division, baseline_results_by_seat)
+seat_trace["round"] = seat_trace["round"].astype(str)
+
 trace_columns = [
     "round",
     "eliminated",
     "transfer",
     "alive_after",
+    "baseline_stage",
     "basis",
     "coverage",
     "anchor_weight",
     "missing",
     *PARTIES,
+    *[f"{party}_swing" for party in PARTIES],
     *[f"{party}_flow" for party in PARTIES],
 ]
 trace_columns = [col for col in trace_columns if col in seat_trace.columns]
@@ -471,6 +530,7 @@ st.dataframe(
         "coverage": st.column_config.NumberColumn(format="%.2f"),
         "anchor_weight": st.column_config.NumberColumn(format="%.2f"),
         **{party: st.column_config.NumberColumn(format="%.2f%%") for party in PARTIES},
+        **{f"{party}_swing": st.column_config.NumberColumn(format="%.2f%%") for party in PARTIES},
         **{f"{party}_flow": st.column_config.NumberColumn(format="%.2f%%") for party in PARTIES},
     },
 )

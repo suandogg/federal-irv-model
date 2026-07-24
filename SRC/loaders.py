@@ -265,8 +265,34 @@ def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
         if not state:
             continue
         key = "National" if state.upper() == "NATIONAL" else state.upper()
+        values = {}
+        for party in PARTIES:
+            values[party] = _to_float(row.get(f"{party}_primary", row.get(party)))
+            for stage in ["3CP", "2CP", "2PP"]:
+                col = f"{party}_{stage}"
+                if col in df.columns:
+                    values[col] = _to_float(row.get(col))
+        out[key] = values
+    return out
+
+
+def load_baseline_seats_by_state() -> dict[str, dict[str, int]]:
+    path = RAW_DIR / "BASELINE_SEATS_BY_STATE.csv"
+    if not path.exists():
+        return {}
+
+    df = pd.read_csv(path)
+    if "State" not in df.columns:
+        return {}
+
+    out = {}
+    for _, row in df.iterrows():
+        state = str(row.get("State") or "").strip()
+        if not state:
+            continue
+        key = "National" if state.upper() == "NATIONAL" else state.upper()
         out[key] = {
-            party: _to_float(row.get(f"{party}_primary", row.get(party)))
+            party: int(round(_to_float(row.get(f"{party}_seats", row.get(party)), default=0.0)))
             for party in PARTIES
         }
     return out

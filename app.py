@@ -12,6 +12,7 @@ from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.loaders import (
     load_baseline_primary_by_state,
     load_baseline_results_by_seat,
+    load_baseline_seats_by_state,
     load_district_2cp_swing,
     load_params,
     load_partisan_vote_index,
@@ -106,6 +107,7 @@ def load_static_inputs():
     sheet_baseline_results = load_sheet_baseline_results()
     baseline_primary_by_state = load_baseline_primary_by_state()
     baseline_results_by_seat = load_baseline_results_by_seat()
+    baseline_seats_by_state = load_baseline_seats_by_state()
     partisan_vote_index = load_partisan_vote_index()
     district_2cp_swing = load_district_2cp_swing()
     return (
@@ -116,6 +118,7 @@ def load_static_inputs():
         sheet_baseline_results,
         baseline_primary_by_state,
         baseline_results_by_seat,
+        baseline_seats_by_state,
         partisan_vote_index,
         district_2cp_swing,
     )
@@ -240,6 +243,7 @@ st.title("Federal IRV Election Model")
     sheet_baseline_results,
     baseline_primary_by_state,
     baseline_results_by_seat,
+    baseline_seats_by_state,
     partisan_vote_index,
     district_2cp_swing,
 ) = load_static_inputs()
@@ -288,8 +292,9 @@ else:
 
 st.subheader(f"{selected_state} Primary Vote")
 view_primary = aggregate_primary(view_seats)
+baseline_state_key = selected_state if selected_state == "National" else selected_state.upper()
 baseline_primary = baseline_primary_by_state.get(
-    selected_state,
+    baseline_state_key,
     baseline_primary_by_state.get("National", raw_primary),
 )
 primary_df = pd.DataFrame(
@@ -314,7 +319,18 @@ st.dataframe(
 
 st.subheader(f"{selected_state} Summary")
 seat_counts = view_results["winner"].value_counts().to_dict()
-baseline_2pp = BASELINE_2PP.get(selected_state, BASELINE_2PP["National"])
+baseline_2pp_row = baseline_primary_by_state.get(
+    baseline_state_key,
+    baseline_primary_by_state.get("National", {}),
+)
+baseline_2pp = {
+    "ALP": baseline_2pp_row.get("ALP_2PP", BASELINE_2PP.get(selected_state, BASELINE_2PP["National"])["ALP"]),
+    "LNP": baseline_2pp_row.get("LNP_2PP", BASELINE_2PP.get(selected_state, BASELINE_2PP["National"])["LNP"]),
+}
+baseline_seats = baseline_seats_by_state.get(
+    baseline_state_key,
+    baseline_seats_by_state.get("National", {}),
+)
 alp_2pp = view_results["ALP_2PP"].mean() * 100
 lnp_2pp = view_results["LNP_2PP"].mean() * 100
 
@@ -325,12 +341,14 @@ summary_df = pd.DataFrame(
             "2PP %": alp_2pp,
             "2PP Swing %": alp_2pp - baseline_2pp["ALP"],
             "Seats": seat_counts.get("ALP", 0),
+            "Seat Change": seat_counts.get("ALP", 0) - baseline_seats.get("ALP", 0),
         },
         {
             "Party": PARTY_LABELS["LNP"],
             "2PP %": lnp_2pp,
             "2PP Swing %": lnp_2pp - baseline_2pp["LNP"],
             "Seats": seat_counts.get("LNP", 0),
+            "Seat Change": seat_counts.get("LNP", 0) - baseline_seats.get("LNP", 0),
         },
         *[
             {
@@ -338,6 +356,7 @@ summary_df = pd.DataFrame(
                 "2PP %": 0.0,
                 "2PP Swing %": 0.0,
                 "Seats": seat_counts.get(party, 0),
+                "Seat Change": seat_counts.get(party, 0) - baseline_seats.get(party, 0),
             }
             for party in ["GRN", "ON", "IND", "OTH"]
         ],

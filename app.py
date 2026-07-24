@@ -406,6 +406,26 @@ st.dataframe(
     },
 )
 
+st.subheader(f"{selected_state} 3CP")
+three_cp_parties = ["ALP", "LNP", "ON"]
+three_cp_df = pd.DataFrame(
+    [
+        {
+            "Party": PARTY_LABELS[party],
+            "3CP %": view_results[f"ALP_LNP_ON_3CP_{party}"].mean() * 100,
+        }
+        for party in three_cp_parties
+    ]
+)
+st.dataframe(
+    three_cp_df.style.map(party_cell_style, subset=["Party"]),
+    width="stretch",
+    hide_index=True,
+    column_config={
+        "3CP %": st.column_config.NumberColumn(format="%.2f%%"),
+    },
+)
+
 st.subheader(f"{selected_state} District Results")
 display_cols = [
     "division",

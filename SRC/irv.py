@@ -120,37 +120,47 @@ def run_irv_for_seat(
         pair=("ALP", "ON"),
         apply_calibration=apply_calibration,
     )
+    alp_lnp_on = run_forced_set(
+        seat_row,
+        matrix_info,
+        params,
+        keep_parties=("ALP", "LNP", "ON"),
+        apply_calibration=apply_calibration,
+    )
 
     result["ALP_2PP"] = alp_lnp["ALP"]
     result["LNP_2PP"] = alp_lnp["LNP"]
     result["ALP_ON_2CP"] = alp_on["ALP"]
     result["ON_ALP_2CP"] = alp_on["ON"]
+    result["ALP_LNP_ON_3CP_ALP"] = alp_lnp_on["ALP"]
+    result["ALP_LNP_ON_3CP_LNP"] = alp_lnp_on["LNP"]
+    result["ALP_LNP_ON_3CP_ON"] = alp_lnp_on["ON"]
 
     return result, trace
 
 
-def run_forced_pair(
+def run_forced_set(
     seat_row: pd.Series,
     matrix_info: dict | None,
     params: dict,
-    pair: tuple[str, str],
+    keep_parties: tuple[str, ...],
     apply_calibration: bool = True,
 ) -> dict[str, float]:
     state = (matrix_info or {}).get("state", "")
     div_key = seat_row.get("division_key", seat_row.get("division", ""))
     matrix = (matrix_info or {}).get("matrix", {})
     seat_flows = (matrix_info or {}).get("seat_flows", {})
-    pair_set = set(pair)
+    keep_set = set(keep_parties)
 
     votes = {party: float(seat_row.get(party, 0.0) or 0.0) for party in PARTIES}
     total = sum(votes.values())
     if total > 0:
         votes = {party: value / total for party, value in votes.items()}
 
-    alive = {party for party in PARTIES if votes.get(party, 0.0) > 0 or party in pair_set}
+    alive = {party for party in PARTIES if votes.get(party, 0.0) > 0 or party in keep_set}
 
-    while any(party not in pair_set for party in alive):
-        eliminable = [party for party in alive if party not in pair_set]
+    while any(party not in keep_set for party in alive):
+        eliminable = [party for party in alive if party not in keep_set]
         eliminated = min(eliminable, key=lambda party: (votes.get(party, 0.0), party))
         alive_after = sorted(alive - {eliminated})
         aec_row = matrix.get(eliminated, {})
@@ -174,11 +184,27 @@ def run_forced_pair(
 
         alive = set(alive_after)
 
-    pair_total = sum(votes.get(party, 0.0) for party in pair)
-    if pair_total <= 0:
-        return {party: 0.0 for party in pair}
+    keep_total = sum(votes.get(party, 0.0) for party in keep_parties)
+    if keep_total <= 0:
+        return {party: 0.0 for party in keep_parties}
 
-    return {party: votes.get(party, 0.0) / pair_total for party in pair}
+    return {party: votes.get(party, 0.0) / keep_total for party in keep_parties}
+
+
+def run_forced_pair(
+    seat_row: pd.Series,
+    matrix_info: dict | None,
+    params: dict,
+    pair: tuple[str, str],
+    apply_calibration: bool = True,
+) -> dict[str, float]:
+    return run_forced_set(
+        seat_row,
+        matrix_info,
+        params,
+        keep_parties=pair,
+        apply_calibration=apply_calibration,
+    )
 
 
 def run_irv_all(

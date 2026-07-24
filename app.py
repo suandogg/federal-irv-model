@@ -9,6 +9,7 @@ import streamlit as st
 
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
+from SRC.live_sheet_sync import sync_inputs_from_google_sheet
 from SRC.loaders import (
     load_baseline_primary_by_state,
     load_baseline_results_by_seat,
@@ -98,8 +99,9 @@ def elimination_position(row, position):
     return order[idx] if len(order) > idx else ""
 
 
-@st.cache_data
+@st.cache_data(show_spinner="Syncing Google Sheet inputs and loading model data...")
 def load_static_inputs():
+    sync_status = sync_inputs_from_google_sheet(st.secrets)
     seats = load_seat_metadata()
     matrices = load_preference_matrices()
     params = load_params()
@@ -121,6 +123,7 @@ def load_static_inputs():
         baseline_seats_by_state,
         partisan_vote_index,
         district_2cp_swing,
+        sync_status,
     )
 
 
@@ -235,6 +238,10 @@ def render_result_table(df):
 st.set_page_config(page_title="Federal IRV Model", layout="wide")
 st.title("Federal IRV Election Model")
 
+if st.sidebar.button("Refresh Google Sheet inputs"):
+    load_static_inputs.clear()
+    st.rerun()
+
 (
     seats,
     matrices,
@@ -246,7 +253,14 @@ st.title("Federal IRV Election Model")
     baseline_seats_by_state,
     partisan_vote_index,
     district_2cp_swing,
+    sync_status,
 ) = load_static_inputs()
+if sync_status.get("synced", 0) > 0:
+    st.sidebar.caption(sync_status.get("message", "Google Sheet inputs synced"))
+elif sync_status.get("message"):
+    st.sidebar.caption(f"Using committed CSV inputs ({sync_status['message']}).")
+if sync_status.get("errors"):
+    st.sidebar.warning("Some Google Sheet tabs could not be synced; using available CSV inputs.")
 raw_primary = aggregate_primary(seats)
 default_primary = DEFAULT_SCENARIO_PRIMARY
 

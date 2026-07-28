@@ -52,6 +52,7 @@ def run_irv_for_seat(
             {
                 "round": round_no,
                 "division": division,
+                "division_key": div_key,
                 "eliminated": eliminated,
                 "transfer": transfer,
                 "alive_after": "+".join(alive_after),

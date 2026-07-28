@@ -498,9 +498,19 @@ changes_df = display_df[
 render_result_table(changes_df)
 
 st.subheader("Seat Detail")
-selected_division = st.selectbox("Select division", sorted(view_results["division"].unique()))
+detail_options = (
+    view_results[["division_key", "division"]]
+    .drop_duplicates("division_key")
+    .sort_values("division")
+)
+detail_labels = dict(zip(detail_options["division_key"], detail_options["division"]))
+selected_division_key = st.selectbox(
+    "Select division",
+    detail_options["division_key"].tolist(),
+    format_func=lambda key: detail_labels.get(key, key),
+)
 
-seat_trace = traces_df[traces_df["division"] == selected_division].copy()
+seat_trace = traces_df[traces_df["division_key"] == selected_division_key].copy()
 for party in PARTIES:
     if party in seat_trace.columns:
         seat_trace[party] = seat_trace[party] * 100
@@ -508,8 +518,7 @@ for party in PARTIES:
     if flow_col in seat_trace.columns:
         seat_trace[flow_col] = seat_trace[flow_col] * 100
 
-selected_result = results_df[results_df["division"] == selected_division].iloc[0]
-selected_division_key = selected_result["division_key"]
+selected_result = results_df[results_df["division_key"] == selected_division_key].iloc[0]
 
 seat_profile = selected_result[
     [

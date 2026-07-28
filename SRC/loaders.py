@@ -33,6 +33,22 @@ def _to_float(value, default: float = 0.0) -> float:
         return default
 
 
+def _to_percent_points(value, default: float = 0.0) -> float:
+    try:
+        if pd.isna(value):
+            return default
+        if isinstance(value, str):
+            text = value.strip().replace(",", "")
+            if not text:
+                return default
+            if text.endswith("%"):
+                return float(text[:-1].strip())
+            return float(text)
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _normalise_division(value: str) -> str:
     text = str(value or "").replace("\n", " ").strip()
     text = re.sub(r"\s*\([A-Z]{2,3}\)\s*$", "", text).strip()
@@ -274,11 +290,11 @@ def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
         key = "National" if state.upper() == "NATIONAL" else state.upper()
         values = {}
         for party in PARTIES:
-            values[party] = _to_float(row.get(f"{party}_primary", row.get(party)))
+            values[party] = _to_percent_points(row.get(f"{party}_primary", row.get(party)))
             for stage in ["3CP", "2CP", "2PP"]:
                 col = f"{party}_{stage}"
                 if col in df.columns:
-                    values[col] = _to_float(row.get(col))
+                    values[col] = _to_percent_points(row.get(col))
         out[key] = values
     return out
 
@@ -322,7 +338,7 @@ def load_baseline_results_by_seat() -> pd.DataFrame:
         for party in PARTIES:
             col = f"{party}_{stage}"
             if col in df.columns:
-                df[col] = df[col].map(_to_float)
+                df[col] = df[col].map(_to_percent_points)
 
     return df
 

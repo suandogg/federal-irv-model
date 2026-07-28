@@ -21,6 +21,13 @@ def _to_float(value, default: float = 0.0) -> float:
     try:
         if pd.isna(value):
             return default
+        if isinstance(value, str):
+            text = value.strip().replace(",", "")
+            if not text:
+                return default
+            if text.endswith("%"):
+                return float(text[:-1].strip()) / 100.0
+            return float(text)
         return float(value)
     except (TypeError, ValueError):
         return default

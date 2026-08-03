@@ -17,6 +17,37 @@ CREDENTIALS_FILE = ROOT / "credentials.json"
 SHEET_ID_FILE = ROOT / "sheet_id.txt"
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
+# Only files read by the production Streamlit runtime belong in the live-sync
+# path.  The workbook also contains dozens of diagnostics, archived model
+# sheets, and validation outputs; downloading all of them on every app restart
+# can exhaust the Google Sheets per-minute request quota.
+PRODUCTION_SYNC_CSV_FILES = frozenset(
+    {
+        "Classification.csv",
+        "SEAT_HELPER.csv",
+        "SEAT_METADATA.csv",
+        "PARAMS.csv",
+        "SEAT_SHRINKAGE_OVERRIDES.csv",
+        "CATEGORY_FLOW_OVERRIDES.csv",
+        "CATEGORY_PREF_FLOWS_LONG.csv",
+        "CATEGORY_SCENARIO_STATS.csv",
+        "BASELINE_PRIMARY_BY_STATE.csv",
+        "BASELINE_RESULTS_BY_SEAT.csv",
+        "BASELINE_SEATS_BY_STATE.csv",
+        "PARTISAN_VOTE_INDEX.csv",
+        "LOGIT_PVI.csv",
+        "IDEOLOGY.csv",
+        "SIPHON.csv",
+        "Proj_2CP.csv",
+        "PRIMARY_2CP.csv",
+        *{
+            f"PREF_MATRIX_{state}.csv"
+            for state in ["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"]
+        },
+    }
+)
+SYNC_BATCH_SIZE = 10
+
 
 def _secret_get(secrets: Mapping[str, Any] | None, key: str, default: Any = None) -> Any:
     if secrets is None:
@@ -137,26 +168,54 @@ def sync_inputs_from_google_sheet(
         }
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+    if only_tabs:
+        selected_files = [
+            (tab_name, csv_filename)
+            for tab_name, csv_filename in files
+            if tab_name in only_tabs or csv_filename in only_tabs
+        ]
+    else:
+        selected_files = [
+            (tab_name, csv_filename)
+            for tab_name, csv_filename in files
+            if csv_filename in PRODUCTION_SYNC_CSV_FILES
+        ]
+
+    skipped = [
+        tab_name for tab_name, _ in selected_files if tab_name not in available_tabs
+    ]
+    selected_files = [
+        (tab_name, csv_filename)
+        for tab_name, csv_filename in selected_files
+        if tab_name in available_tabs
+    ]
+
     synced = 0
-    skipped = []
     errors = []
-
-    for tab_name, csv_filename in files:
-        if only_tabs and tab_name not in only_tabs and csv_filename not in only_tabs:
-            continue
-
-        if tab_name not in available_tabs:
-            skipped.append(tab_name)
-            continue
-
+    for start in range(0, len(selected_files), SYNC_BATCH_SIZE):
+        batch = selected_files[start : start + SYNC_BATCH_SIZE]
+        ranges = [
+            f"'{tab_name.replace(chr(39), chr(39) * 2)}'"
+            for tab_name, _ in batch
+        ]
         try:
-            worksheet = sheet.worksheet(tab_name)
-            values = worksheet.get_all_values()
-            df = pd.DataFrame(values)
-            df.to_csv(DATA_DIR / csv_filename, index=False, header=False, lineterminator="\r\n")
-            synced += 1
+            response = sheet.values_batch_get(ranges)
+            value_ranges = response.get("valueRanges", [])
+            if len(value_ranges) != len(batch):
+                raise ValueError(
+                    f"Google returned {len(value_ranges)} ranges for {len(batch)} requested tabs"
+                )
+            for (tab_name, csv_filename), value_range in zip(batch, value_ranges):
+                values = value_range.get("values", [])
+                pd.DataFrame(values).to_csv(
+                    DATA_DIR / csv_filename,
+                    index=False,
+                    header=False,
+                    lineterminator="\r\n",
+                )
+                synced += 1
         except Exception as exc:
-            errors.append(f"{tab_name}: {exc}")
+            errors.append(f"{', '.join(tab for tab, _ in batch)}: {exc}")
 
     return {
         "ok": len(errors) == 0,

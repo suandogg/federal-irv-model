@@ -375,29 +375,20 @@ def load_partisan_vote_index(params: dict | None = None) -> pd.DataFrame:
         if party in df.columns:
             df[party] = df[party].map(_to_float)
 
-    # Build production PVI values from the named calculation rows.  The
-    # PARTISAN_VOTE_INDEX presentation tab has previously paired an
-    # alphabetically sorted electorate list with an unsorted value range,
-    # silently assigning one seat's strengths to another.  Joining the source
-    # tabs by division_key makes row reordering harmless.
-    additive = _load_keyed_primary_pvi(RAW_DIR / "PRIMARY_EFFECTIVE.csv")
+    # PARTISAN_VOTE_INDEX is the editable additive-strength input.  For parties
+    # explicitly configured with UseLogit=True, select the electorate-keyed
+    # logit value instead.  Never join either source by row position.
     logit_values = _load_keyed_primary_pvi(RAW_DIR / "LOGIT_PVI.csv")
-    if additive.empty:
-        return df[["division", "division_key", *[party for party in PARTIES if party in df.columns]]]
-
-    state_by_key = df.set_index("division_key")["state"].to_dict()
     use_logit = ((params or {}).get("primary_model", {})).get("use_logit", {})
     keyed_logit = logit_values.set_index("division_key") if not logit_values.empty else pd.DataFrame()
 
     records = []
-    for _, row in additive.iterrows():
+    for _, row in df.iterrows():
         key = row["division_key"]
-        if key not in state_by_key:
-            continue
         record = {
             "division": row["division"],
             "division_key": key,
-            "state": state_by_key[key],
+            "state": row["state"],
         }
         for party in PARTIES:
             value = row.get(party, float("nan"))

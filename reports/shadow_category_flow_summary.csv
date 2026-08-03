@@ -1,0 +1,8 @@
+Metric,Value
+Category-exit scenarios,488.0
+Single-candidate category exits,356.0
+Multi-candidate category exits,132.0
+Scenarios with dominant recipient changed,36.0
+Scenarios with total variation >= 5pp,106.0
+Scenarios with total variation >= 10pp,66.0
+Maximum total variation,0.271349293559882

@@ -1,0 +1,4 @@
+Frozen legacy federal IRV app inputs.
+Manual seat/scenario evidence restored from data/archive/manual_pre_candidate_recompile.
+Evidence shrinkage, nearest-field matching and seat-class effects disabled.
+Google Sheets sync is disabled by app legacy mode.

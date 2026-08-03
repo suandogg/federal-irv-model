@@ -231,48 +231,6 @@ def load_projected_2cp() -> pd.DataFrame:
     return df[["division", *[p for p in PARTIES if p in df.columns]]]
 
 
-def load_sheet_baseline_results() -> pd.DataFrame:
-    path = RAW_DIR / "SEAT_PROBS_3CP.csv"
-    if not path.exists():
-        return pd.DataFrame()
-
-    rows = []
-    with path.open(newline="") as handle:
-        reader = csv.reader(handle)
-        for row in reader:
-            if len(row) < 13:
-                continue
-
-            division = _normalise_division(row[0])
-            if not division or division.upper() == "DIVISION":
-                continue
-
-            values = [_to_float(value, default=0.0) for value in row[7:13]]
-            if sum(values) <= 0:
-                continue
-
-            final_values = dict(zip(PARTIES, values))
-            final_parties = [party for party, value in final_values.items() if value > 1e-12]
-            if len(final_parties) < 2:
-                continue
-
-            ordered = sorted(final_parties, key=lambda party: final_values[party], reverse=True)
-            rows.append(
-                {
-                    "division": division,
-                    "division_key": division_key(division),
-                    "sheet_winner": ordered[0],
-                    "sheet_runner_up": ordered[1],
-                    "sheet_winner_pct": final_values[ordered[0]],
-                    "sheet_runner_up_pct": final_values[ordered[1]],
-                    "sheet_final_two": "+".join(sorted(final_parties)),
-                    **{f"sheet_{party}_final": final_values[party] for party in PARTIES},
-                }
-            )
-
-    return pd.DataFrame(rows)
-
-
 def load_baseline_primary_by_state() -> dict[str, dict[str, float]]:
     path = RAW_DIR / "BASELINE_PRIMARY_BY_STATE.csv"
     if not path.exists():
@@ -434,9 +392,115 @@ def load_params() -> dict:
             "LNP_TO_ON_BY_SEAT": load_lnp_to_on_by_seat(),
         },
         "POSTERIOR_SCENARIOS": load_posterior_scenarios(),
+        "POSTERIOR_SCENARIO_EVIDENCE": load_posterior_scenario_evidence(),
+        "POSTERIOR_SCENARIO_EVIDENCE_BY_CLASS": load_posterior_scenario_evidence_by_class(),
+        "SEAT_SHRINKAGE_K_BY_DIVISION": load_seat_shrinkage_overrides(),
+        "CATEGORY_FLOW_OVERRIDES": load_category_flow_overrides(),
         "siphon": load_siphon(),
         "ideology": load_ideology(),
     }
+
+
+def load_candidate_classification() -> pd.DataFrame:
+    path = RAW_DIR / "CANDIDATE_CLASSIFICATION.csv"
+    if not path.exists():
+        return pd.DataFrame()
+
+    df = pd.read_csv(path)
+    required = {
+        "CandidateID",
+        "Electorate",
+        "ModelCategory",
+        "CandidateSubtype",
+    }
+    if not required.issubset(df.columns):
+        return pd.DataFrame()
+
+    df = df.copy()
+    for column in [
+        "PrimaryShare",
+        "TPPToALP",
+        "TPPToCoalition",
+        "TCPToA",
+        "TCPToB",
+    ]:
+        if column in df.columns:
+            df[column] = df[column].map(lambda value: _to_float(value, default=None))
+    for column in ["ModelCategory", "CandidateSubtype", "IdeologyFamily", "ReviewStatus"]:
+        if column in df.columns:
+            df[column] = df[column].fillna("").astype(str).str.strip().str.upper()
+    return df
+
+
+def load_seat_shrinkage_overrides() -> dict[str, float]:
+    path = RAW_DIR / "SEAT_SHRINKAGE_OVERRIDES.csv"
+    if not path.exists():
+        return {}
+
+    df = pd.read_csv(path)
+    required = {"Division", "UseOverride", "SeatShrinkageK"}
+    if not required.issubset(df.columns):
+        return {}
+
+    out = {}
+    for _, row in df.iterrows():
+        enabled = str(row.get("UseOverride") or "").strip().upper()
+        if enabled not in {"TRUE", "YES", "Y", "1"}:
+            continue
+        value = _to_float(row.get("SeatShrinkageK"), default=None)
+        if value is None or value < 0:
+            continue
+        key = division_key(row.get("Division"))
+        if key:
+            out[key] = float(value)
+    return out
+
+
+def load_category_flow_overrides() -> dict[tuple[str, str, str], dict]:
+    path = RAW_DIR / "CATEGORY_FLOW_OVERRIDES.csv"
+    if not path.exists():
+        return {}
+
+    df = pd.read_csv(path)
+    required = {
+        "Electorate",
+        "EliminatedModelCategory",
+        "AliveModelCategoriesAfter",
+        "UseOverride",
+        "EvidenceMultiplierOverride",
+        "MethodOverride",
+    }
+    if not required.issubset(df.columns):
+        return {}
+
+    allowed_methods = {
+        "",
+        "OBSERVED_LAST_SURVIVOR_EXIT",
+        "PROPORTIONAL_PRIMARY_ORIGIN_PASS_THROUGH",
+    }
+    out = {}
+    for _, row in df.iterrows():
+        enabled = str(row.get("UseOverride") or "").strip().upper()
+        if enabled not in {"TRUE", "YES", "Y", "1"}:
+            continue
+        multiplier = _to_float(row.get("EvidenceMultiplierOverride"), default=None)
+        method = str(row.get("MethodOverride") or "").strip().upper()
+        if multiplier is not None and not 0 <= multiplier <= 1:
+            continue
+        if method not in allowed_methods:
+            continue
+        key = (
+            division_key(row.get("Electorate")),
+            str(row.get("EliminatedModelCategory") or "").strip().upper(),
+            str(row.get("AliveModelCategoriesAfter") or "").strip().upper(),
+        )
+        if not all(key) or (multiplier is None and not method):
+            continue
+        out[key] = {
+            "evidence_multiplier": multiplier,
+            "method": method or None,
+        }
+    return out
 
 
 def load_primary_model_params(param_df: pd.DataFrame) -> dict:
@@ -471,9 +535,7 @@ def load_primary_model_params(param_df: pd.DataFrame) -> dict:
 
 
 def load_lnp_to_on_by_seat() -> dict[str, float]:
-    out = load_primary_2cp_lnp_to_on()
-    out.update(load_inferred_lnp_to_on_from_3cp())
-    return out
+    return load_primary_2cp_lnp_to_on()
 
 
 def load_primary_2cp_lnp_to_on() -> dict[str, float]:
@@ -521,38 +583,6 @@ def load_primary_2cp_lnp_to_on() -> dict[str, float]:
     return out
 
 
-def load_inferred_lnp_to_on_from_3cp() -> dict[str, float]:
-    path = RAW_DIR / "SEAT_PROBS_3CP.csv"
-    if not path.exists():
-        return {}
-
-    out = {}
-    with path.open(newline="") as handle:
-        reader = csv.reader(handle)
-        for row in reader:
-            if len(row) < 13:
-                continue
-
-            division = str(row[0] or "").strip()
-            if not division or division.upper() == "DIVISION":
-                continue
-
-            values = [_to_float(value, default=0.0) for value in row[1:13]]
-            alp_3cp, lnp_3cp, _, on_3cp, _, _ = values[:6]
-            alp_2cp, lnp_2cp, _, on_2cp, _, _ = values[6:12]
-
-            if not (alp_3cp > 0 and lnp_3cp > 0 and on_3cp > 0):
-                continue
-            if not (alp_2cp > 0 and on_2cp > 0 and lnp_2cp <= 0):
-                continue
-
-            lnp_to_on = (on_2cp - on_3cp) / lnp_3cp
-            if 0 <= lnp_to_on <= 1:
-                out[division_key(division)] = lnp_to_on
-
-    return out
-
-
 def load_ideology() -> dict[str, dict[str, float]]:
     df = _read_csv("IDEOLOGY.csv")
     out = {}
@@ -593,20 +623,165 @@ def _normalise_alive_set(value: str) -> str:
 
 
 def load_posterior_scenarios() -> dict[str, dict[str, float]]:
-    df = _read_csv("SCENARIO_STATS.csv")
-    out = {}
+    evidence = load_posterior_scenario_evidence()
+    return {
+        key: value["shares"]
+        for key, value in evidence.items()
+        if value.get("shares")
+    }
+
+
+def load_posterior_scenario_evidence() -> dict[str, dict]:
+    source_file = (
+        "CATEGORY_SCENARIO_STATS.csv"
+        if (RAW_DIR / "CATEGORY_SCENARIO_STATS.csv").exists()
+        else "SCENARIO_STATS.csv"
+    )
+    df = _read_csv(source_file)
+    out: dict[str, dict] = {}
 
     for _, row in df.iterrows():
         elim = str(row.get("Eliminated") or "").strip().upper()
         recipient = str(row.get("Recipient") or "").strip().upper()
         alive = _normalise_alive_set(row.get("AliveSet"))
         share = _to_float(row.get("Share"))
+        votes = _to_float(row.get("Votes"))
+        scenario_total = _to_float(row.get("ScenarioTotal"))
+        seats = _to_float(row.get("Seats"))
 
         if elim not in PARTIES or recipient not in PARTIES or not alive or share <= 0:
             continue
 
-        out.setdefault(f"{elim}|{alive}", {})[recipient] = share
+        key = f"{elim}|{alive}"
+        scenario = out.setdefault(
+            key,
+            {
+                "eliminated": elim,
+                "alive_set": alive,
+                "shares": {},
+                "recipient_votes": {},
+                "scenario_total": 0.0,
+                "seats": 0,
+                "source": source_file.removesuffix(".csv"),
+            },
+        )
+        scenario["shares"][recipient] = share
+        scenario["recipient_votes"][recipient] = votes
+        scenario["scenario_total"] = max(scenario["scenario_total"], scenario_total)
+        scenario["seats"] = max(scenario["seats"], int(round(seats)))
 
+    seat_evidence = load_seat_preference_evidence()
+    if seat_evidence.empty:
+        return out
+
+    seat_scenario_recipient_votes: dict[tuple[str, str, str], dict[str, float]] = {}
+    for _, row in seat_evidence.iterrows():
+        seat = str(row.get("Seat") or "").strip()
+        elim = _normalise_party(row.get("Eliminated"))
+        alive = _normalise_alive_set(row.get("AliveSet"))
+        recipient = _normalise_party(row.get("Recipient"))
+        votes = _to_float(row.get("Votes"))
+        if not seat or not alive or votes <= 0:
+            continue
+        key = (seat, elim, alive)
+        seat_scenario_recipient_votes.setdefault(key, {})[recipient] = votes
+
+    observations: dict[str, list[dict[str, float]]] = {}
+    for (_, elim, alive), recipient_votes in seat_scenario_recipient_votes.items():
+        total = sum(recipient_votes.values())
+        if total <= 0:
+            continue
+        observations.setdefault(f"{elim}|{alive}", []).append(
+            {
+                party: recipient_votes.get(party, 0.0) / total
+                for party in alive.split("+")
+            }
+        )
+
+    for key, seat_rows in observations.items():
+        if key not in out or not seat_rows:
+            continue
+        parties = out[key]["alive_set"].split("+")
+        means = {
+            party: sum(row.get(party, 0.0) for row in seat_rows) / len(seat_rows)
+            for party in parties
+        }
+        variances = {}
+        for party in parties:
+            if len(seat_rows) <= 1:
+                variances[party] = 0.0
+                continue
+            mean = means[party]
+            variances[party] = sum(
+                (row.get(party, 0.0) - mean) ** 2 for row in seat_rows
+            ) / (len(seat_rows) - 1)
+
+        out[key]["equal_seat_mean_shares"] = means
+        out[key]["between_seat_variance"] = variances
+        out[key]["seat_observations"] = len(seat_rows)
+
+    return out
+
+
+def load_posterior_scenario_evidence_by_class() -> dict[str, dict[str, dict]]:
+    evidence = load_seat_preference_evidence()
+    seats = load_seat_metadata()
+    if evidence.empty or seats.empty:
+        return {}
+
+    class_by_key = seats.set_index("division_key")["classification"].to_dict()
+    grouped_votes: dict[
+        tuple[str, str, str, str], dict[str, float]
+    ] = {}
+
+    for _, row in evidence.iterrows():
+        seat = str(row.get("Seat") or "").strip()
+        seat_key = division_key(seat)
+        seat_class = str(class_by_key.get(seat_key) or "").strip()
+        eliminated = _normalise_party(row.get("Eliminated"))
+        alive = _normalise_alive_set(row.get("AliveSet"))
+        recipient = _normalise_party(row.get("Recipient"))
+        votes = _to_float(row.get("Votes"))
+        if not seat_class or not alive or votes <= 0:
+            continue
+        key = (seat_class, seat_key, eliminated, alive)
+        grouped_votes.setdefault(key, {})[recipient] = votes
+
+    observations: dict[tuple[str, str], list[dict[str, float]]] = {}
+    for (seat_class, _, eliminated, alive), recipient_votes in grouped_votes.items():
+        total = sum(recipient_votes.values())
+        if total <= 0:
+            continue
+        observations.setdefault((seat_class, f"{eliminated}|{alive}"), []).append(
+            {
+                party: recipient_votes.get(party, 0.0) / total
+                for party in alive.split("+")
+            }
+        )
+
+    out: dict[str, dict[str, dict]] = {}
+    for (seat_class, scenario_key), rows in observations.items():
+        alive = scenario_key.split("|", 1)[1].split("+")
+        means = {
+            party: sum(row.get(party, 0.0) for row in rows) / len(rows)
+            for party in alive
+        }
+        variance = {}
+        for party in alive:
+            if len(rows) <= 1:
+                variance[party] = 0.0
+            else:
+                mean = means[party]
+                variance[party] = sum(
+                    (row.get(party, 0.0) - mean) ** 2 for row in rows
+                ) / (len(rows) - 1)
+        out.setdefault(seat_class, {})[scenario_key] = {
+            "equal_seat_mean_shares": means,
+            "between_seat_variance": variance,
+            "seat_observations": len(rows),
+            "seats": len(rows),
+            "source": "seat_class",
+        }
     return out
 
 
@@ -645,27 +820,176 @@ def load_preference_matrices() -> dict[str, dict]:
                     "state": state,
                     "matrix": matrix,
                     "seat_flows": {},
+                    "seat_flow_evidence": {},
                 }
                 r += 8
             else:
                 r += 1
 
     seat_flows = load_seat_preference_flows()
+    seat_flow_evidence = load_seat_preference_flow_evidence()
     for div_key, flows in seat_flows.items():
         if div_key in matrices:
             matrices[div_key]["seat_flows"] = flows
+            matrices[div_key]["seat_flow_evidence"] = seat_flow_evidence.get(div_key, {})
 
     return matrices
 
 
-def load_seat_preference_flows() -> dict[str, dict[str, dict[str, float]]]:
+def load_seat_preference_evidence() -> pd.DataFrame:
+    category_path = RAW_DIR / "CATEGORY_PREF_FLOWS_LONG.csv"
+    if category_path.exists():
+        df = pd.read_csv(category_path)
+        required = {"Seat", "Eliminated", "AliveSet", "Recipient", "Share"}
+        if not required.issubset(df.columns):
+            return pd.DataFrame()
+        df = df.copy()
+        df["Seat"] = df["Seat"].fillna("").astype(str).str.strip()
+        df["division_key"] = df["Seat"].map(division_key)
+        df["Eliminated"] = df["Eliminated"].map(_normalise_party)
+        df["Recipient"] = df["Recipient"].map(_normalise_party)
+        df["AliveSet"] = df["AliveSet"].map(_normalise_alive_set)
+        df["ReportedAliveSet"] = df["AliveSet"]
+        df["AliveSetSource"] = "aec_candidate_round_category_exit"
+        df["AliveSetPositionConflict"] = False
+        return df
+
     path = RAW_DIR / "SEAT_PREF_FLOWS_LONG.csv"
     if not path.exists():
-        return {}
+        return pd.DataFrame()
 
     df = pd.read_csv(path)
     required = {"Seat", "Eliminated", "AliveSet", "Recipient", "Share"}
     if not required.issubset(df.columns):
+        return pd.DataFrame()
+
+    round_metadata, approved_seats = _load_wide_flow_round_metadata()
+    records = []
+
+    for _, row in df.iterrows():
+        seat = str(row.get("Seat") or "").strip()
+        if approved_seats and seat not in approved_seats:
+            continue
+        eliminated = _normalise_party(row.get("Eliminated"))
+        recipient = _normalise_party(row.get("Recipient"))
+        reported_alive = _normalise_alive_set(row.get("AliveSet"))
+        alive = set(reported_alive.split("+")) if reported_alive else set()
+        metadata = round_metadata.get((seat, eliminated), {})
+        top_three = metadata.get("top_three", [])
+        position = metadata.get("position")
+
+        expected_alive = set(alive)
+        if eliminated in top_three:
+            expected_alive.update(top_three[: top_three.index(eliminated)])
+        else:
+            expected_alive.update(top_three)
+            if position:
+                expected_alive.update(
+                    party
+                    for party, party_position in metadata.get("positions", {}).items()
+                    if party_position and party_position < position
+                )
+
+        # A positive recipient must have been alive in the manually compiled
+        # scenario. Positional labels are validation evidence, not authority.
+        expected_alive.add(recipient)
+        canonical_alive = "+".join(sorted(p for p in expected_alive if p in PARTIES))
+        position_conflict = bool(
+            position and position <= 3 and eliminated not in top_three
+        )
+
+        record = row.to_dict()
+        record.update(
+            {
+                "Seat": seat,
+                "division_key": division_key(seat),
+                "Eliminated": eliminated,
+                "Recipient": recipient,
+                "ReportedAliveSet": reported_alive,
+                "AliveSet": canonical_alive,
+                "AliveSetSource": "positive_recipients_validated_against_3cp",
+                "AliveSetPositionConflict": position_conflict,
+                "RecordedPosition": position,
+                "TopThree": "+".join(top_three),
+            }
+        )
+        records.append(record)
+
+    return pd.DataFrame(records)
+
+
+def _load_wide_flow_round_metadata() -> tuple[dict[tuple[str, str], dict], set[str]]:
+    path = RAW_DIR / "SEAT_PREF_FLOWS.csv"
+    if not path.exists():
+        return {}, set()
+
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        rows = list(csv.reader(handle))
+    if len(rows) < 4:
+        return {}, set()
+
+    owners = []
+    current_owner = ""
+    for value in rows[0]:
+        party = _normalise_party(value)
+        if party in PARTIES:
+            current_owner = party
+        owners.append(current_owner)
+
+    position_columns = {
+        owners[index]: index
+        for index, value in enumerate(rows[2])
+        if str(value).strip().upper() == "POSITION" and owners[index] in PARTIES
+    }
+    rank = {
+        "FIRST": 1,
+        "SECOND": 2,
+        "THIRD": 3,
+        "FOURTH": 4,
+        "FIFTH": 5,
+        "SIXTH": 6,
+        "SIXITH": 6,
+    }
+    metadata = {}
+    approved_seats = set()
+
+    for row in rows[3:]:
+        if len(row) < 5:
+            continue
+        seat = str(row[1] or "").strip()
+        if not seat:
+            continue
+        status = str(row[-1] or "").strip().upper()
+        if status != "Y":
+            continue
+        approved_seats.add(seat)
+
+        top_three = [
+            party
+            for party in (_normalise_party(value) for value in row[2:5])
+            if party in PARTIES
+        ]
+        positions = {
+            party: rank.get(str(row[column] or "").strip().upper())
+            for party, column in position_columns.items()
+            if column < len(row)
+        }
+
+        for eliminated, position in positions.items():
+            if position is None:
+                continue
+            metadata[(seat, eliminated)] = {
+                "top_three": top_three,
+                "positions": positions,
+                "position": position,
+            }
+
+    return metadata, approved_seats
+
+
+def load_seat_preference_flows() -> dict[str, dict[str, dict[str, float]]]:
+    df = load_seat_preference_evidence()
+    if df.empty:
         return {}
 
     out: dict[str, dict[str, dict[str, float]]] = {}
@@ -683,6 +1007,61 @@ def load_seat_preference_flows() -> dict[str, dict[str, dict[str, float]]]:
 
         key = f"{elim}|{alive}"
         out.setdefault(division_key(division), {}).setdefault(key, {})[recipient] = share
+
+    return out
+
+
+def load_seat_preference_flow_evidence() -> dict[str, dict[str, dict]]:
+    df = load_seat_preference_evidence()
+    if df.empty:
+        return {}
+
+    out: dict[str, dict[str, dict]] = {}
+    for _, row in df.iterrows():
+        division = str(row.get("Seat") or "").strip()
+        eliminated = _normalise_party(row.get("Eliminated"))
+        recipient = _normalise_party(row.get("Recipient"))
+        alive = _normalise_alive_set(row.get("AliveSet"))
+        votes = _to_float(row.get("Votes"))
+        share = _to_float(row.get("Share"))
+
+        if not division or eliminated not in PARTIES or recipient not in PARTIES:
+            continue
+        if not alive or share <= 0:
+            continue
+
+        key = f"{eliminated}|{alive}"
+        scenario = (
+            out.setdefault(division_key(division), {})
+            .setdefault(
+                key,
+                {
+                    "eliminated": eliminated,
+                    "alive_set": alive,
+                    "shares": {},
+                    "recipient_votes": {},
+                    "scenario_total": 0.0,
+                    "seats": 1,
+                    "source": "SEAT_PREF_FLOWS_LONG",
+                    "alive_set_source": row.get("AliveSetSource", ""),
+                    "position_conflict": bool(row.get("AliveSetPositionConflict", False)),
+                    "evidence_multiplier": max(
+                        0.0,
+                        min(
+                            1.0,
+                            _to_float(
+                                row.get("EffectiveEvidenceMultiplier"),
+                                default=1.0,
+                            ),
+                        ),
+                    ),
+                    "method": str(row.get("Method") or "").strip().upper(),
+                },
+            )
+        )
+        scenario["shares"][recipient] = share
+        scenario["recipient_votes"][recipient] = votes
+        scenario["scenario_total"] += votes
 
     return out
 

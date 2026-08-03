@@ -1,0 +1,4 @@
+method,seats,winner_matches,final_two_matches
+hybrid,148,131,131
+posterior_only,148,130,129
+matrix_only,148,125,120

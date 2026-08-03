@@ -1,0 +1,41 @@
+parameter,sheet_value,status,production_locations,possible_name_mismatch,sheet_location,description
+AEC_2CP_ANCHOR_ON,0.15,active,SRC/preference_engine.py:453,,PARAMS!A50:C50,AEC anchor strength when ON is eliminated in a final ALP–LNP count
+AEC_ANCHOR_WHEN_MISSING,0.4,active,SRC/preference_engine.py:455,,PARAMS!A53:C53,"Baseline AEC weight applied when alive parties are missing, regardless of coverage"
+AEC_BLEND_COV_MAX,0.9,unused,,,PARAMS!A47:C47,Coverage level where AEC reaches full strength
+AEC_BLEND_COV_MIN,0.5,unused,,,PARAMS!A46:C46,Coverage level where AEC blending begins
+AEC_BLEND_STRENGTH,0.75,unused,,,PARAMS!A48:C48,Overall multiplier on AEC influence
+AEC_MISMATCH_MAX,0.3,active,SRC/preference_engine.py:456,,PARAMS!A52:C52,Maximum allowed AEC anchor weight when the AEC row is missing any alive party
+AEC_PRIOR_BLEND,0.7,unused,,,PARAMS!A25:C25,How much weight to give seat-specific AEC conditional flows vs ideological priors when estimating unknown preference mass.
+AEC_PRIOR_K,4.0,unused,,,PARAMS!A26:C26,How many seats it takes to reach that weight
+CLASS_EFFECT_SHRINKAGE_K,10,active,SRC/preference_engine.py:162; SRC/preference_engine.py:174,,PARAMS!A63:C63,"Strongly partially pools Inner metro, Outer metro, Provincial and Rural effects toward national evidence."
+CLASS_SMOOTH_K,50000.0,unused,,,PARAMS!A39:C39,Smooths posterior scenarios across seat classes (e.g. Inner Metro vs Provincial).
+EMPIRICAL_SHRINKAGE_K,10.0,unused,,,PARAMS!A38:C38,Controls how strongly small-sample empirical posteriors are shrunk toward the prior.
+IND_OTH_MAX,0.75,unused,,,PARAMS!A29:C29,"Tighter cap applied when IND or OTH are involved, preventing unrealistic landslide flows from minor parties."
+IND_OTH_WEAK_TILT_K,0.3,unused,,,PARAMS!A32:C32,Weak adjustment for IND/OTH preferences based on GRN vs ON primaries (used instead of LNP primaries to avoid teal distortions).
+IND_OTH_WEAK_TILT_MAX,0.02,unused,,,PARAMS!A33:C33,Maximum size of the weak GRN–ON tilt applied to IND or OTH preference flows.
+IND_TO_GRN_INNERMETROBUMP,0.06,unused,,,PARAMS!A34:C34,"Extra boost for IND → GRN preference flows in inner-metro seats, reflecting teal–Green voter overlap."
+IND_TO_GRN_OTHER_BUMP,0.02,unused,,,PARAMS!A35:C35,Smaller IND → GRN boost applied outside inner-metro seats.
+MAJOR_PAIR_MAX,0.9,unused,,,PARAMS!A27:C27,"Maximum share any party can receive in a final two-candidate (2CP) count, unless overridden by strong AEC evidence."
+MATRIX_POSTERIOR_BLEND_WEIGHT,0,active,SRC/preference_engine.py:381,,PARAMS!A58:C58,Weight on the generalised matrix in the validated posterior blend. Zero reflects the best flow validation result.
+MIN_SUPPORT,0.005,unused,,,PARAMS!A36:C36,Minimum floor applied to all alive parties to prevent zero-probability outcomes and numerical instability.
+NEAREST_FIELD_MAX_DISTANCE,1,active,SRC/preference_engine.py:77,,PARAMS!A60:C60,Shadow-test safety restriction: nearest-field donors may differ by at most one alive party.
+NEAREST_FIELD_REQUIRE_ALL_REQUESTED,1,active,SRC/preference_engine.py:81,,PARAMS!A61:C61,Shadow-test safety restriction: a donor must contain every party alive in the requested scenario.
+NEAREST_FIELD_SHRINKAGE_K,0.5,active,SRC/preference_engine.py:557,,PARAMS!A59:C59,Shadow-test setting for restricted nearest-field borrowing; inactive while USE_NEAREST_FIELD_MATCHING is zero.
+POOL_SHRINKAGE_K,0.5,active,SRC/preference_engine.py:137,,PARAMS!A56:C56,Mild national pooled shrinkage selected by the isolated exact-scenario held-out validation.
+POST_ENTRY_FLOOR,0.15,active,SRC/preference_engine.py:207,,PARAMS!A51:C51,Hard minimum share given to missing alive parties when posterior parsing yields zero
+POST_ENTRY_STRENGTH,0.75,active,SRC/preference_engine.py:208,,PARAMS!A49:C49,Proportion of posterior mass allowed to enter when a party is alive but missing from AEC row
+PRIMARY_TILT_K,0.2,unused,,,PARAMS!A30:C30,Strength of primary-vote adjustment when allocating preferences between ALP and LNP (bounded by PRIMARY_TILT_MAX).
+PRIMARY_TILT_MAX,0.03,unused,,,PARAMS!A31:C31,Hard limit on how much primary-vote differences can move preference flows in either direction.
+RESERVE_MASS_WHEN_ALIVE_ZERO,0.12,unused,,,PARAMS!A37:C37,"Forces some preference mass to be allocated by priors when AEC data shows zero flows to still-alive parties, preventing “two-destination collapse”."
+SEAT_SHRINKAGE_K,0,active,SRC/preference_engine.py:91,,PARAMS!A57:C57,Exact historical seat flows remain unshrunk; every positive level tested worsened reconstruction.
+SIPHON_DONOR_CAP,0.25,unused,,,PARAMS!A41:C41,Maximum share a donor party can lose to siphoning
+SIPHON_STRENGTH,0.35,unused,,,PARAMS!A40:C40,SIPHON_STRENGTH
+SIPHON_STRENGTH_GRN,0.35,unused,,,PARAMS!A43:C43,
+SIPHON_STRENGTH_IND,0.25,unused,,,PARAMS!A44:C44,
+SIPHON_STRENGTH_ON,0.5,unused,,,PARAMS!A42:C42,Party-specific siphon aggressiveness
+SIPHON_STRENGTH_OTH,0.2,unused,,,PARAMS!A45:C45,
+SMOOTH_LAMBDA,0.1,unused,,,PARAMS!A24:C24,Weakly blends in the completed (Markov) matrix to smooth sharp edges when AEC data is sparse. Set to 0 to disable smoothing entirely.
+THREE_WAY_MAX,0.8,unused,,,PARAMS!A28:C28,Maximum share any party can receive in a three-candidate (3CP) scenario to prevent implausible dominance.
+USE_CLASS_EFFECTS,0,active,SRC/preference_engine.py:141,,PARAMS!A62:C62,Seat-class effects remain disabled after only a marginal held-out gain and weaker reconstruction.
+USE_EVIDENCE_SHRINKAGE,1,active,SRC/preference_engine.py:69,,PARAMS!A54:C54,Enables the conservative pooled-evidence framework; nearest-field and seat-class features remain separately controlled.
+USE_NEAREST_FIELD_MATCHING,0,active,SRC/preference_engine.py:73,,PARAMS!A55:C55,Disabled for production development; restricted nearest-field matching remains available for shadow testing.

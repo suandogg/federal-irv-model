@@ -6,6 +6,7 @@ import pandas as pd
 
 from .constants import PARTIES
 from .preference_engine import get_preference_weights
+from .reliability import assess_reliability
 
 
 def run_irv_for_seat(
@@ -17,8 +18,10 @@ def run_irv_for_seat(
     division = seat_row["division"]
     div_key = seat_row.get("division_key", division)
     state = (matrix_info or {}).get("state", "")
+    seat_class = str(seat_row.get("classification", "") or "")
     matrix = (matrix_info or {}).get("matrix", {})
     seat_flows = (matrix_info or {}).get("seat_flows", {})
+    seat_flow_evidence = (matrix_info or {}).get("seat_flow_evidence", {})
 
     votes = {party: float(seat_row.get(party, 0.0) or 0.0) for party in PARTIES}
     total = sum(votes.values())
@@ -43,11 +46,14 @@ def run_irv_for_seat(
             seat_state=state or "NAT",
             division_key=div_key,
             seat_flows=seat_flows,
+            seat_flow_evidence=seat_flow_evidence,
             aec_row_party=eliminated,
+            seat_class=seat_class,
         )
 
         transfer = votes.get(eliminated, 0.0)
 
+        diagnostic.update(assess_reliability(diagnostic))
         trace.append(
             {
                 "round": round_no,
@@ -59,6 +65,17 @@ def run_irv_for_seat(
                 "basis": diagnostic["basis"],
                 "coverage": diagnostic["coverage"],
                 "anchor_weight": diagnostic["anchor_weight"],
+                "seat_evidence_weight": diagnostic.get("seat_evidence_weight"),
+                "pooled_evidence_weight": diagnostic.get("pooled_evidence_weight"),
+                "nearest_distance": diagnostic.get("nearest_distance"),
+                "nearest_scenarios": diagnostic.get("nearest_scenarios", ""),
+                "class_evidence_weight": diagnostic.get("class_evidence_weight"),
+                "class_evidence_seats": diagnostic.get("class_evidence_seats", 0),
+                "pooled_evidence_seats": diagnostic.get("pooled_evidence_seats", 0),
+                "pooled_mean_variance": diagnostic.get("pooled_mean_variance"),
+                "position_conflict": diagnostic.get("position_conflict", False),
+                "reliability": diagnostic.get("reliability", "Low"),
+                "reliability_reason": diagnostic.get("reliability_reason", ""),
                 "missing": "+".join(diagnostic["missing"]),
                 **{party: votes.get(party, 0.0) for party in PARTIES},
                 **{f"{party}_flow": weights.get(party, 0.0) for party in PARTIES},
@@ -148,9 +165,11 @@ def run_forced_set(
     apply_calibration: bool = True,
 ) -> dict[str, float]:
     state = (matrix_info or {}).get("state", "")
+    seat_class = str(seat_row.get("classification", "") or "")
     div_key = seat_row.get("division_key", seat_row.get("division", ""))
     matrix = (matrix_info or {}).get("matrix", {})
     seat_flows = (matrix_info or {}).get("seat_flows", {})
+    seat_flow_evidence = (matrix_info or {}).get("seat_flow_evidence", {})
     keep_set = set(keep_parties)
 
     votes = {party: float(seat_row.get(party, 0.0) or 0.0) for party in PARTIES}
@@ -175,7 +194,9 @@ def run_forced_set(
             seat_state=state or "NAT",
             division_key=div_key,
             seat_flows=seat_flows,
+            seat_flow_evidence=seat_flow_evidence,
             aec_row_party=eliminated,
+            seat_class=seat_class,
         )
 
         transfer = votes.get(eliminated, 0.0)

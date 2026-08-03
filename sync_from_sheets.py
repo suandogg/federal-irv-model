@@ -53,9 +53,13 @@ def worksheet_to_dataframe(worksheet) -> pd.DataFrame:
     return pd.DataFrame(values)
 
 
-def sync_sheet(sheet_id: str, only_tabs: set[str] | None = None) -> None:
+def sync_sheet(
+    sheet_id: str,
+    only_tabs: set[str] | None = None,
+    credentials_file: Path = CREDENTIALS_FILE,
+) -> None:
     creds = Credentials.from_service_account_file(
-        CREDENTIALS_FILE,
+        credentials_file,
         scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
     )
 
@@ -92,13 +96,23 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Sync federal IRV CSV inputs from Google Sheets.")
     parser.add_argument("--sheet-id", help="Google Sheet ID to sync from.")
     parser.add_argument(
+        "--credentials-file",
+        type=Path,
+        default=CREDENTIALS_FILE,
+        help="Service-account credentials JSON file.",
+    )
+    parser.add_argument(
         "--only",
         nargs="*",
         help="Optional list of sheet tab names or CSV filenames to sync.",
     )
     args = parser.parse_args()
 
-    sync_sheet(resolve_sheet_id(args.sheet_id), set(args.only or []))
+    sync_sheet(
+        resolve_sheet_id(args.sheet_id),
+        set(args.only or []),
+        args.credentials_file,
+    )
 
 
 if __name__ == "__main__":

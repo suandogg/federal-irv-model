@@ -8,6 +8,7 @@ from pathlib import Path
 import gspread
 import pandas as pd
 from google.oauth2.service_account import Credentials
+from gspread.utils import rowcol_to_a1
 
 
 ROOT = Path(__file__).resolve().parent
@@ -71,9 +72,41 @@ def worksheet_for(sheet, tab_name: str, rows: int, cols: int):
         )
 
 
-def push_sheet(sheet_id: str, only_tabs: set[str] | None = None) -> None:
+def format_review_tab(worksheet, tab_name: str, rows: int, cols: int) -> None:
+    if tab_name not in {
+        "CATEGORY_FLOW_OVERRIDES",
+        "CATEGORY_FLOW_DIAGNOSTIC",
+        "CATEGORY_FLOW_VALIDATION",
+        "NEAREST_FIELD_VALIDATION",
+        "NEAREST_FIELD_RESTRICTION_VALIDATION",
+        "SHRINKAGE_LEVEL_VALIDATION",
+        "INCREMENTAL_METHOD_VALIDATION",
+        "CATEGORY_FLOW_PRODUCTION_IMPACT",
+    }:
+        return
+    worksheet.freeze(rows=1)
+    if rows and cols:
+        worksheet.set_basic_filter(f"A1:{rowcol_to_a1(rows, cols)}")
+        worksheet.format(
+            f"A1:{rowcol_to_a1(1, cols)}",
+            {
+                "backgroundColor": {"red": 0.18, "green": 0.33, "blue": 0.55},
+                "textFormat": {
+                    "bold": True,
+                    "foregroundColor": {"red": 1.0, "green": 1.0, "blue": 1.0},
+                },
+                "wrapStrategy": "WRAP",
+            },
+        )
+
+
+def push_sheet(
+    sheet_id: str,
+    only_tabs: set[str] | None = None,
+    credentials_file: Path = CREDENTIALS_FILE,
+) -> None:
     creds = Credentials.from_service_account_file(
-        CREDENTIALS_FILE,
+        credentials_file,
         scopes=["https://www.googleapis.com/auth/spreadsheets"],
     )
 
@@ -100,6 +133,7 @@ def push_sheet(sheet_id: str, only_tabs: set[str] | None = None) -> None:
                     values=grid,
                     value_input_option="RAW",
                 )
+            format_review_tab(worksheet, tab_name, rows, cols)
 
             print(f"  ✓  data/raw/{csv_filename} -> {tab_name} ({rows} rows)")
         except Exception as exc:
@@ -112,13 +146,23 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Populate a federal IRV Google Sheet from local CSVs.")
     parser.add_argument("--sheet-id", help="Google Sheet ID to push into.")
     parser.add_argument(
+        "--credentials-file",
+        type=Path,
+        default=CREDENTIALS_FILE,
+        help="Service-account credentials JSON file.",
+    )
+    parser.add_argument(
         "--only",
         nargs="*",
         help="Optional list of sheet tab names or CSV filenames to push.",
     )
     args = parser.parse_args()
 
-    push_sheet(resolve_sheet_id(args.sheet_id), set(args.only or []))
+    push_sheet(
+        resolve_sheet_id(args.sheet_id),
+        set(args.only or []),
+        args.credentials_file,
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,8 @@
+Metric,Legacy manual,Canonical direct,Canonical pass-through
+Seats compared,148.0,148,148.0
+Winner matches,146.0,140,138.0
+Final-two matches,146.0,138,141.0
+Mean absolute winner error (pp),0.30249506222283584,0.9131971944024121,0.5319030125800186
+Pass-through winners changed vs legacy,0.0,,8.0
+Pass-through final twos changed vs legacy,0.0,,5.0
+Pass-through elimination orders changed vs legacy,0.0,,7.0

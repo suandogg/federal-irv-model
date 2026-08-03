@@ -1,0 +1,11 @@
+reliability,basis,rounds,seats
+High,matrix_posterior_explicit_blend,125,66
+High,posterior_shrunk,8,8
+Low,posterior_nearest_field,73,56
+Low,posterior_shrunk,51,51
+Low,matrix_posterior_explicit_blend,33,24
+Low,seat_pref_flow_shrunk,3,3
+Medium,seat_pref_flow_shrunk,145,104
+Medium,posterior_nearest_field,63,48
+Medium,matrix_posterior_explicit_blend,26,17
+Medium,posterior_shrunk,2,1

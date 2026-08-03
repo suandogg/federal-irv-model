@@ -1,0 +1,530 @@
+division,round,eliminated,alive_after,basis,reliability,reliability_reason,pooled_evidence_seats,pooled_mean_variance,class_evidence_seats,nearest_distance,position_conflict,coverage,anchor_weight
+Wentworth,1,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Wentworth,2,ON,GRN+IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.929712460060703,0.0
+Wentworth,3,GRN,IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.645390070896454,0.0
+Sydney,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Sydney,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Sydney,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.2916129032,0.0
+Kingsford Smith,1,IND,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,16,0.00456985146000111,4,nan,False,1.0,0.0
+Kingsford Smith,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Kingsford Smith,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8709160794,0.0
+Bennelong,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Bennelong,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Bennelong,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.7891272032,0.0
+Bradfield,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Bradfield,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,12,nan,False,1.0,0.0
+Bradfield,3,ON,ALP+IND+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.004468302286990023,12,nan,False,0.7800391389534013,0.0
+Bradfield,4,ALP,IND+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,12,0.02737716836092395,6,nan,False,1.0,0.0
+Warringah,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Warringah,2,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Warringah,3,ON,GRN+IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.9313375446334332,0.0
+Warringah,4,GRN,IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.6995630699030044,0.0
+Banks,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Banks,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Banks,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Banks,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.7104769057289523,0.0
+Cook,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Cook,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Cook,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.8287012293,0.0
+Barton,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Barton,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Barton,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8329113924,0.0
+Blaxland,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Blaxland,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,12,nan,False,1.0,0.0
+Blaxland,3,LNP,ALP+IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Blaxland,4,ON,ALP+IND,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.3356076759,0.0
+Grayndler,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Grayndler,2,IND,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,16,0.00456985146000111,4,nan,False,1.0,0.0
+Grayndler,3,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Grayndler,4,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.2625313283,0.0
+Parramatta,1,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.9443043777244556,0.0
+Parramatta,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Parramatta,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.8090757005190924,0.0
+Reid,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Reid,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.8330955777133523,0.0
+Reid,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Reid,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.8398299079,0.0
+Watson,1,LNP,ALP+GRN+IND+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Watson,2,OTH,ALP+GRN+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 55 seats.",55,0.0,0,1.0,False,0.6663618699,0.0
+Watson,3,GRN,ALP+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.8804634622,0.0
+Watson,4,IND,ALP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Berowra,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Berowra,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Berowra,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,0.5690551073344756,0.0
+Berowra,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.7138058447885858,0.0
+Mackellar,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Mackellar,2,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Mackellar,3,GRN,IND+LNP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.7407901115,0.0
+Mackellar,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,7,nan,False,0.7881703189078817,0.0
+Mitchell,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Mitchell,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Mitchell,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.865209471786521,0.0
+Chifley,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Chifley,2,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.8293376675829338,0.0
+Chifley,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7911597437,0.0
+Fowler,1,LNP,ALP+GRN+IND+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Fowler,2,OTH,ALP+GRN+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 55 seats.",55,0.0,0,1.0,False,0.8707514811129249,0.0
+Fowler,3,GRN,ALP+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.9143657462999999,0.0
+Fowler,4,ON,ALP+IND,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.41103379721779326,0.0
+Greenway,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Greenway,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,30,nan,False,0.8230088495787611,0.0
+Greenway,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Greenway,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Lindsay,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Lindsay,2,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Lindsay,3,ON,ALP+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,25,0.006225577806918004,6,nan,False,1.0,0.0
+McMahon,1,OTH,ALP+GRN+IND+LNP+ON,posterior_shrunk,High,Exact pooled scenario based on 55 seats.,55,0.007226873927393435,11,nan,False,0.0,0.0
+McMahon,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+McMahon,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,0.6950073114786506,0.0
+McMahon,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Hughes,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Hughes,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Hughes,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.8328061455,0.0
+Hume,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Hume,2,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,6,nan,False,1.0,0.0
+Hume,3,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,30,nan,False,0.7573844988448524,0.0
+Hume,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,0.0,0.0
+Macarthur,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Macarthur,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Macarthur,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8195464502,0.0
+Werriwa,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Werriwa,2,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,6,nan,False,1.0,0.0
+Werriwa,3,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,30,nan,False,0.808359541419164,0.0
+Werriwa,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Dobell,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Dobell,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Dobell,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Newcastle,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Newcastle,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Newcastle,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.0,0.0
+Paterson,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,10,nan,False,1.0,0.0
+Paterson,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,2,nan,False,1.0,0.0
+Paterson,3,IND,ALP+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,5,nan,False,1.0,0.0
+Paterson,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Robertson,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Robertson,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Robertson,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Robertson,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Shortland,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Shortland,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,11,nan,False,0.7217948717749616,0.0
+Shortland,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Shortland,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Macquarie,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Macquarie,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Macquarie,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Cowper,1,ALP,GRN+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,1.0,0.0
+Cowper,2,GRN,IND+LNP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.7706590492114671,0.0
+Cowper,3,OTH,IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.8020342972000001,0.0
+Cowper,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.8972383993999999,0.0
+Cunningham,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Cunningham,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Cunningham,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.852097291,0.0
+Whitlam,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,10,nan,False,1.0,0.0
+Whitlam,2,IND,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,16,0.00456985146000111,5,nan,False,1.0,0.0
+Whitlam,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Whitlam,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Calare,1,ALP,GRN+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,1.0,0.0
+Calare,2,GRN,IND+LNP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.0,0.0
+Calare,3,OTH,IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Calare,4,LNP,IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Eden-Monaro,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Eden-Monaro,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.7079695337087609,0.0
+Eden-Monaro,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Eden-Monaro,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Gilmore,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Gilmore,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Gilmore,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,0.5508308391,0.0
+Gilmore,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,14,nan,False,0.613633815418409,0.0
+Hunter,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,1.0,0.0
+Hunter,2,GRN,ALP+ON+OTH,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 6 seats.",6,0.0,0,1.0,False,0.8576486609,0.0
+Hunter,3,OTH,ALP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.6521238562652124,0.0
+Lyne,1,GRN,ALP+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Lyne,2,OTH,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,16,nan,False,0.8671122995,0.0
+Lyne,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Lyne,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.8855949065,0.0
+New England,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,7,nan,False,1.0,0.0
+New England,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.8407879147031843,0.0
+New England,3,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,11,nan,False,1.0,0.0
+New England,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Page,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Page,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Page,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Page,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,14,nan,False,0.8047160412000001,0.0
+Parkes,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Parkes,2,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Parkes,3,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,2,nan,False,0.9251131221722466,0.0
+Parkes,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Richmond,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Richmond,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Richmond,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.24260560322426056,0.0
+Farrer,1,GRN,ALP+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Farrer,2,OTH,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,16,nan,False,0.9357184409544996,0.0
+Farrer,3,ALP,IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,1.0,0.0
+Farrer,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.9194813510459741,0.0
+Riverina,1,GRN,ALP+IND+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Riverina,2,OTH,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,16,nan,False,0.9482900401525856,0.0
+Riverina,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Riverina,4,IND,LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.5393575459460642,0.0
+Chisholm,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Chisholm,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,4,nan,False,1.0,0.0
+Chisholm,3,ON,ALP+GRN+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 70 seats.,70,0.002627378720211702,23,nan,False,0.7408495859,0.0
+Chisholm,4,GRN,ALP+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.003794586526247348,23,nan,False,1.0,0.0
+Goldstein,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Goldstein,2,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Goldstein,3,GRN,IND+LNP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.6967231897030328,0.0
+Goldstein,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,12,nan,False,0.8785751430087858,0.0
+Hotham,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Hotham,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Hotham,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8765950825,0.0
+Kooyong,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Kooyong,2,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Kooyong,3,ON,GRN+IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.9314285714327428,0.0
+Kooyong,4,GRN,IND+LNP,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 24 seats.",24,0.0,0,1.0,False,0.7625555917071233,0.0
+Macnamara,1,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.7790608160022093,0.0
+Macnamara,2,ON,ALP+GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,70,0.002627378720211702,23,nan,False,1.0,0.0
+Macnamara,3,GRN,ALP+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.003794586526247348,23,nan,False,1.0,0.0
+Cooper,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,1.0,0.0
+Cooper,2,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.8980662785,0.0
+Cooper,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.2933182333212004,0.0
+Melbourne,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Melbourne,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,4,nan,False,1.0,0.0
+Melbourne,3,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Melbourne,4,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.25914634144814025,0.0
+Wills,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,1.0,0.0
+Wills,2,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.9101286991908987,0.0
+Wills,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.25147679322514765,0.0
+Fraser,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,1.0,0.0
+Fraser,2,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.8778906938000001,0.0
+Fraser,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.28229885060000004,0.0
+Gellibrand,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Gellibrand,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Gellibrand,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8293449953,0.0
+Maribyrnong,1,OTH,ALP+GRN+LNP+ON,posterior_shrunk,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.0,0.0
+Maribyrnong,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Maribyrnong,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8995228853,0.0
+Aston,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Aston,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,30,nan,False,0.7844561866956891,0.0
+Aston,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Aston,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.7566961341,0.0
+Deakin,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Deakin,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Deakin,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Deakin,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.6272844748025458,0.0
+Menzies,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Menzies,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Menzies,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Menzies,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.6800570477808034,0.0
+Calwell,1,LNP,ALP+GRN+IND+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Calwell,2,GRN,ALP+IND+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.9338284490747062,0.0
+Calwell,3,OTH,ALP+IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.5905409783,0.0
+Calwell,4,IND,ALP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Jagajaga,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Jagajaga,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Jagajaga,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Jagajaga,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.6778211563932217,0.0
+Scullin,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Scullin,2,GRN,ALP+ON+OTH,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 6 seats.",6,0.0,0,1.0,False,0.6938573143,0.0
+Scullin,3,OTH,ALP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.5581876083,0.0
+Bruce,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Bruce,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Bruce,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Dunkley,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Dunkley,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Dunkley,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Dunkley,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Holt,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Holt,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Holt,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Isaacs,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Isaacs,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Isaacs,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Gorton,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Gorton,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Gorton,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Lalor,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Lalor,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,30,nan,False,0.9575307862287259,0.0
+Lalor,3,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Lalor,4,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8248850334,0.0
+La Trobe,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+La Trobe,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+La Trobe,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,4,nan,False,0.7985241118798525,0.0
+Ballarat,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Ballarat,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,11,nan,False,0.9290461648999999,0.0
+Ballarat,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Ballarat,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Bendigo,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Bendigo,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Bendigo,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,4,nan,False,0.6474017744,0.0
+Corangamite,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Corangamite,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,11,nan,False,0.8204532248999999,0.0
+Corangamite,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Corangamite,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,4,nan,False,0.609340659339066,0.0
+Corio,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Corio,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,11,nan,False,0.8348395138950452,0.0
+Corio,3,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Corio,4,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7718876833,0.0
+Hawke,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,1,nan,False,1.0,0.0
+Hawke,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,1,nan,False,0.6335114635366489,0.0
+Hawke,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Casey,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Casey,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Casey,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,0.4891506509846746,0.0
+Casey,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,14,nan,False,0.6274448605484322,0.0
+Flinders,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Flinders,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,8,nan,False,1.0,0.0
+Flinders,3,ALP,IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,1.0,0.0
+Flinders,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.858045436217161,0.0
+Gippsland,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Gippsland,2,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Gippsland,3,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Monash,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Low,Seat-specific historical flow with a position conflict.,55,0.007226873927393435,16,nan,True,1.0,0.0
+Monash,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,8,nan,False,0.9372276908218832,0.0
+Monash,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Monash,4,LNP,IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Indi,1,ALP,GRN+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,1.0,0.0
+Indi,2,GRN,IND+LNP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 3 seats.",3,0.0,0,1.0,False,0.7530938123802474,0.0
+Indi,3,OTH,IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.7809144649624731,0.0
+Indi,4,LNP,IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+McEwen,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+McEwen,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+McEwen,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Nicholls,1,GRN,ALP+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Nicholls,2,OTH,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,16,nan,False,0.8738620448000001,0.0
+Nicholls,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Nicholls,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.7601233651,0.0
+Mallee,1,GRN,ALP+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Mallee,2,ALP,IND+LNP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Mallee,3,OTH,IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.7398592332073987,0.0
+Mallee,4,IND,LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Wannon,1,GRN,ALP+IND+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.010850330498686365,2,nan,False,1.0,0.0
+Wannon,2,OTH,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,16,nan,False,0.8783478996,0.0
+Wannon,3,ALP,IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,1.0,0.0
+Wannon,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.8653872144999999,0.0
+Brisbane,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Brisbane,2,ON,ALP+GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,70,0.002627378720211702,23,nan,False,1.0,0.0
+Brisbane,3,ALP,GRN+LNP,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,6,nan,False,0.0,0.0
+Lilley,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Lilley,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Lilley,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8841893772,0.0
+Griffith,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Griffith,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Griffith,3,ON,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 70 seats.",70,0.0,0,1.0,False,0.3140625,0.0
+Moreton,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Moreton,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Moreton,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8856042283,0.0
+Bonner,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Bonner,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Bonner,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.8350996184999999,0.0
+Bowman,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Bowman,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Bowman,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.8002093735,0.0
+Dickson,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Dickson,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Dickson,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,0.574648469808507,0.0
+Dickson,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.592132814877764,0.0
+Petrie,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Petrie,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Petrie,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.8053484603000001,0.0
+Fadden,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Fadden,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Fadden,3,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Fadden,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,0.0,0.0
+Forde,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Forde,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Forde,3,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Forde,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Oxley,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Oxley,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Oxley,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7976895224,0.0
+Rankin,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Rankin,2,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.7738290206226172,0.0
+Rankin,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7128603104,0.0
+Ryan,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Ryan,2,ON,ALP+GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,70,0.002627378720211702,28,nan,False,1.0,0.0
+Ryan,3,ALP,GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,1,0.0,1,nan,False,1.0,0.0
+Blair,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,1,nan,False,1.0,0.0
+Blair,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,1,nan,False,0.7913996717,0.0
+Blair,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Capricornia,1,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,1,nan,False,1.0,0.0
+Capricornia,2,OTH,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,3,0.002202329789376214,1,nan,False,1.0,0.0
+Capricornia,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Herbert,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,1,nan,False,1.0,0.0
+Herbert,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,1,nan,False,1.0,0.0
+Herbert,3,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,0.0,0.0
+Hinkler,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Hinkler,2,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,1,nan,False,1.0,0.0
+Hinkler,3,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,1,nan,False,0.8752216312,0.0
+Hinkler,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,0.0,0.0
+Longman,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,11,nan,False,1.0,0.0
+Longman,2,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Longman,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Groom,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,10,nan,False,1.0,0.0
+Groom,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,2,nan,False,1.0,0.0
+Groom,3,ALP,IND+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,2,nan,False,1.0,0.0
+Groom,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.9303942702186079,0.0
+McPherson,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,10,nan,False,1.0,0.0
+McPherson,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,2,nan,False,1.0,0.0
+McPherson,3,IND,ALP+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,5,nan,False,1.0,0.0
+McPherson,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,4,nan,False,0.6181318681285439,0.0
+Moncrieff,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Moncrieff,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,11,nan,False,0.7789671362221033,0.0
+Moncrieff,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Moncrieff,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,4,nan,False,0.7760598909776061,0.0
+Dawson,1,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Dawson,2,OTH,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,3,0.002202329789376214,2,nan,False,1.0,0.0
+Dawson,3,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Kennedy,1,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Kennedy,2,LNP,ALP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 2 seats.",2,0.0,0,1.0,False,0.0,0.0
+Kennedy,3,ALP,ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 2 seats.",2,0.0,0,2.0,False,0.7026197013,0.0
+Leichhardt,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Leichhardt,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,2,nan,False,0.8397009478,0.0
+Leichhardt,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Flynn,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Flynn,2,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Flynn,3,OTH,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,3,0.002202329789376214,2,nan,False,1.0,0.0
+Flynn,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Fairfax,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Fairfax,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,8,nan,False,1.0,0.0
+Fairfax,3,IND,ALP+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,1.0,0.0
+Fairfax,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,14,nan,False,0.543771964081751,0.0
+Fisher,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Fisher,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,8,nan,False,1.0,0.0
+Fisher,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Fisher,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.8959994254,0.0
+Maranoa,1,GRN,ALP+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Maranoa,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,2,nan,False,0.960679980648034,0.0
+Maranoa,3,ALP,LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,1,0.0,1,nan,False,1.0,0.0
+Wide Bay,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Wide Bay,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Wide Bay,3,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Low,Seat-specific historical flow with a position conflict.,21,0.003235015131739608,11,nan,True,1.0,0.0
+Wide Bay,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Wright,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Wright,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,2,nan,False,0.8426640367,0.0
+Wright,3,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Cowan,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,4,nan,False,1.0,0.0
+Cowan,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Cowan,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Cowan,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,12,nan,False,0.0,0.0
+Curtin,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Curtin,2,ALP,GRN+IND+LNP+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,1.0,0.0
+Curtin,3,GRN,IND+LNP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.6037024720079259,0.0
+Curtin,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,12,nan,False,0.8596947060742092,0.0
+Perth,1,OTH,ALP+GRN+LNP+ON,posterior_shrunk,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.0,0.0
+Perth,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Perth,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8789662431,0.0
+Fremantle,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Fremantle,2,LNP,ALP+GRN+IND+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,12,nan,False,1.0,0.0
+Fremantle,3,GRN,ALP+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.9483891148000001,0.0
+Fremantle,4,ON,ALP+IND,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.45442156269182316,0.0
+Swan,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Swan,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Swan,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8596298245,0.0
+Tangney,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Tangney,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Tangney,3,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.7834817813999999,0.0
+Bullwinkel,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Bullwinkel,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Bullwinkel,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Hasluck,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Hasluck,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Hasluck,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.770064301,0.0
+Pearce,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Pearce,2,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Pearce,3,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,0.0,0.0
+Moore,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Moore,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,14,nan,False,1.0,0.0
+Moore,3,IND,ALP+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,1.0,0.0
+Moore,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,6,nan,False,0.48082251713672597,0.0
+Brand,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Brand,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Brand,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7811213177,0.0
+Burt,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Burt,2,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Burt,3,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.8220058943999999,0.0
+Burt,4,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8903884604000001,0.0
+Canning,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Canning,2,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,21,0.003235015131739608,6,nan,False,1.0,0.0
+Canning,3,ON,ALP+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,25,0.006225577806918004,6,nan,False,1.0,0.0
+Durack,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,5,nan,False,1.0,0.0
+Durack,2,LNP,ALP+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 2 seats.",2,0.0,0,1.0,False,0.0,0.0
+Durack,3,ALP,ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 2 seats.",2,0.0,0,2.0,False,0.0,0.0
+O'Connor,1,GRN,ALP+LNP+ON+OTH,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 6 seats.,6,0.001240946632856196,5,nan,False,1.0,0.0
+O'Connor,2,OTH,ALP+LNP+ON,matrix_posterior_explicit_blend,Medium,Exact pooled scenario based on 3 seats.,3,0.002202329789376214,2,nan,False,0.7873078365,0.0
+O'Connor,3,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Forrest,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Forrest,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,8,nan,False,1.0,0.0
+Forrest,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Forrest,4,LNP,IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Adelaide,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Adelaide,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Adelaide,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8917348512,0.0
+Hindmarsh,1,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.9268551988092686,0.0
+Hindmarsh,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Hindmarsh,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8414751687,0.0
+Sturt,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Sturt,2,IND,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,4,nan,False,1.0,0.0
+Sturt,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,23,nan,False,1.0,0.0
+Sturt,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.6022255439401112,0.0
+Boothby,1,OTH,ALP+GRN+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 55 seats.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Boothby,2,IND,ALP+GRN+LNP+ON,posterior_shrunk,High,Exact pooled scenario based on 16 seats.,16,0.00456985146000111,3,nan,False,0.0,0.0
+Boothby,3,ON,ALP+GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,70,0.002627378720211702,28,nan,False,1.0,0.0
+Boothby,4,GRN,ALP+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.003794586526247348,30,nan,False,1.0,0.0
+Kingston,1,IND,ALP+GRN+LNP+ON+OTH,posterior_shrunk,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,11,nan,False,0.0,0.0
+Kingston,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Kingston,3,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Kingston,4,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.8216915525,0.0
+Makin,1,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,30,nan,False,1.0,0.0
+Makin,2,LNP,ALP+GRN+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.0,0.0
+Makin,3,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.7122423008,0.0
+Spence,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,11,nan,False,1.0,0.0
+Spence,2,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Spence,3,OTH,ALP+GRN+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 73 seats.",73,0.0,0,1.0,False,0.8750602990999999,0.0
+Spence,4,GRN,ALP+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 21 seats.",21,0.0,0,1.0,False,0.6697591146,0.0
+Barker,1,IND,ALP+GRN+LNP+ON+OTH,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Barker,2,OTH,ALP+GRN+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 73 seats.,73,0.00802382233899586,16,nan,False,0.78054953,0.0
+Barker,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Barker,4,ALP,LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Grey,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Grey,2,GRN,ALP+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,10,0.006923713178850636,8,nan,False,1.0,0.0
+Grey,3,ALP,IND+LNP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Grey,4,ON,IND+LNP,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.7894634651,0.0
+Mayo,1,LNP,ALP+GRN+ON+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,1.0,0.0
+Mayo,2,GRN,ALP+ON+OTH,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 6 seats.",6,0.0,0,1.0,False,0.9393423433,0.0
+Mayo,3,ON,ALP+OTH,posterior_nearest_field,Low,"Nearest-field evidence at distance 1, based on 1 seats.",1,0.0,0,1.0,False,0.46156612422307836,0.0
+Clark,1,LNP,ALP+GRN+IND+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,12,nan,False,1.0,0.0
+Clark,2,ALP,GRN+IND+ON,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 1 seats.",1,0.0,0,2.0,False,0.0,0.0
+Clark,3,ON,GRN+IND,posterior_nearest_field,Low,"Nearest-field evidence at distance 2, based on 24 seats.",24,0.0,0,2.0,False,0.4484827099386062,0.0
+Franklin,1,OTH,ALP+GRN+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 55 seats.,55,0.007226873927393435,11,nan,False,1.0,0.0
+Franklin,2,LNP,ALP+GRN+IND+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,3,nan,False,1.0,0.0
+Franklin,3,GRN,ALP+IND+ON,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.9602232248903978,0.0
+Franklin,4,ON,ALP+IND,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 10 seats.",10,0.0,0,1.0,False,0.3029264433969707,0.0
+Bass,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,10,nan,False,1.0,0.0
+Bass,2,IND,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,16,0.00456985146000111,5,nan,False,1.0,0.0
+Bass,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,3,nan,False,1.0,0.0
+Bass,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Braddon,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,16,nan,False,1.0,0.0
+Braddon,2,IND,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,16,0.00456985146000111,3,nan,False,1.0,0.0
+Braddon,3,GRN,ALP+LNP+ON,seat_pref_flow_shrunk,Low,Seat-specific historical flow with a position conflict.,21,0.003235015131739608,11,nan,True,1.0,0.0
+Braddon,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Lyons,1,IND,ALP+GRN+LNP+ON+OTH,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,26,0.005372962514514995,7,nan,False,1.0,0.0
+Lyons,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Lyons,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Lyons,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0
+Bean,1,ON,ALP+GRN+IND+LNP,posterior_shrunk,High,Exact pooled scenario based on 24 seats.,24,0.003781361307381329,12,nan,False,0.0,0.0
+Bean,2,GRN,ALP+IND+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,24,0.01110310800616268,12,nan,False,1.0,0.0
+Bean,3,LNP,ALP+IND,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,7,0.012914683017200406,4,nan,False,1.0,0.0
+Canberra,1,OTH,ALP+GRN+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 55 seats.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Canberra,2,ON,ALP+GRN+IND+LNP,posterior_shrunk,High,Exact pooled scenario based on 24 seats.,24,0.003781361307381329,12,nan,False,0.0,0.0
+Canberra,3,LNP,ALP+GRN+IND,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 2 seats.,2,0.0,12,nan,False,1.0,0.0
+Canberra,4,IND,ALP+GRN,posterior_nearest_field,Medium,"Nearest-field evidence at distance 1, based on 8 seats.",8,0.0,0,1.0,False,0.7561961207000001,0.0
+Fenner,1,ON,ALP+GRN+LNP+OTH,posterior_shrunk,Medium,Exact pooled scenario based on 6 seats.,6,0.014100225800929917,3,nan,False,0.0,0.0
+Fenner,2,OTH,ALP+GRN+LNP,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,3,0.050769106075335683,3,nan,False,1.0,0.0
+Fenner,3,LNP,ALP+GRN,posterior_shrunk,Medium,Exact pooled scenario based on 9 seats.,9,0.0029721702490102617,8,nan,False,0.0,0.0
+Solomon,1,OTH,ALP+GRN+IND+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,55,0.007226873927393435,17,nan,False,1.0,0.0
+Solomon,2,GRN,ALP+IND+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 10 seats.,10,0.006923713178850636,12,nan,False,1.0,0.0
+Solomon,3,IND,ALP+LNP+ON,matrix_posterior_explicit_blend,Low,Exact pooled scenario based on 1 seats.,1,0.0,4,nan,False,1.0,0.0
+Solomon,4,ON,ALP+LNP,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 25 seats.,25,0.006225577806918004,23,nan,False,0.6120179796499999,0.0
+Lingiari,1,IND,ALP+GRN+LNP+ON+OTH,posterior_shrunk,High,Exact pooled scenario based on 26 seats.,26,0.005372962514514995,7,nan,False,0.0,0.0
+Lingiari,2,OTH,ALP+GRN+LNP+ON,seat_pref_flow_shrunk,Medium,Seat-specific historical flow from one election.,73,0.00802382233899586,16,nan,False,1.0,0.0
+Lingiari,3,GRN,ALP+LNP+ON,matrix_posterior_explicit_blend,High,Exact pooled scenario based on 21 seats.,21,0.003235015131739608,11,nan,False,1.0,0.0
+Lingiari,4,LNP,ALP+ON,posterior_shrunk,Low,Exact pooled scenario based on 1 seats.,1,0.0,1,nan,False,0.0,0.0

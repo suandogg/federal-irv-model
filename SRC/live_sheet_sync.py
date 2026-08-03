@@ -96,8 +96,17 @@ def sync_inputs_from_google_sheet(
     secrets: Mapping[str, Any] | None = None,
     only_tabs: set[str] | None = None,
 ) -> dict[str, Any]:
-    sheet_id = resolve_sheet_id(secrets)
-    creds = resolve_credentials(secrets)
+    try:
+        sheet_id = resolve_sheet_id(secrets)
+        creds = resolve_credentials(secrets)
+    except Exception as exc:
+        return {
+            "ok": False,
+            "synced": 0,
+            "skipped": [],
+            "errors": [f"Google Sheet configuration: {exc}"],
+            "message": "Google Sheet sync unavailable; using committed CSV inputs",
+        }
 
     if not sheet_id or creds is None:
         missing = []
@@ -113,10 +122,19 @@ def sync_inputs_from_google_sheet(
             "message": "Missing " + " and ".join(missing),
         }
 
-    gc = gspread.authorize(creds)
-    sheet = gc.open_by_key(sheet_id)
-    files = load_manifest()
-    available_tabs = {worksheet.title for worksheet in sheet.worksheets()}
+    try:
+        gc = gspread.authorize(creds)
+        sheet = gc.open_by_key(sheet_id)
+        files = load_manifest()
+        available_tabs = {worksheet.title for worksheet in sheet.worksheets()}
+    except Exception as exc:
+        return {
+            "ok": False,
+            "synced": 0,
+            "skipped": [],
+            "errors": [f"Google Sheet connection: {exc}"],
+            "message": "Google Sheet sync unavailable; using committed CSV inputs",
+        }
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     synced = 0

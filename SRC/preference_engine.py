@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 
 from .constants import PARTIES
+from .evidence import nearest_scenario_distribution, shrink_distribution
 
 
 def _clamp01(value) -> float:
@@ -62,6 +63,135 @@ def _parse_share(value) -> float:
 def _scalar(params: dict, key: str, default: float) -> float:
     scalars = params.get("scalars", {})
     return float(scalars.get(key, default))
+
+
+def _evidence_shrinkage_enabled(params: dict) -> bool:
+    return _scalar(params, "USE_EVIDENCE_SHRINKAGE", 1.0) >= 0.5
+
+
+def _nearest_field_enabled(params: dict) -> bool:
+    return _scalar(params, "USE_NEAREST_FIELD_MATCHING", 1.0) >= 0.5
+
+
+def _nearest_field_options(params: dict) -> dict:
+    max_distance = _scalar(params, "NEAREST_FIELD_MAX_DISTANCE", 99.0)
+    return {
+        "max_distance": int(max_distance) if max_distance < 99 else None,
+        "require_all_requested": (
+            _scalar(params, "NEAREST_FIELD_REQUIRE_ALL_REQUESTED", 0.0) >= 0.5
+        ),
+    }
+
+
+def _seat_shrinkage_k(params: dict, division_key: str | None) -> float:
+    key = str(division_key or "").strip().upper()
+    override = params.get("SEAT_SHRINKAGE_K_BY_DIVISION", {}).get(key)
+    if override is not None:
+        return max(float(override), 0.0)
+    return _scalar(params, "SEAT_SHRINKAGE_K", 1.0)
+
+
+def _scenario_evidence_diagnostic(
+    params: dict,
+    scenario_key: str,
+) -> dict[str, float | int]:
+    evidence = params.get("POSTERIOR_SCENARIO_EVIDENCE", {}).get(
+        scenario_key, {}
+    )
+    variances = [
+        float(value)
+        for value in evidence.get("between_seat_variance", {}).values()
+    ]
+    return {
+        "pooled_evidence_seats": int(
+            evidence.get("seat_observations", evidence.get("seats", 0)) or 0
+        ),
+        "pooled_mean_variance": (
+            sum(variances) / len(variances) if variances else 0.0
+        ),
+    }
+
+
+def _shrunk_pooled_scenario(
+    elim: str,
+    alive_key: str,
+    alive: set[str],
+    params: dict,
+    seat_class: str = "",
+) -> tuple[dict[str, float] | None, float, float | None, int]:
+    evidence = params.get("POSTERIOR_SCENARIO_EVIDENCE", {}).get(
+        f"{elim}|{alive_key}"
+    )
+    if not evidence:
+        return None, 0.0, None, 0
+
+    empirical = evidence.get("equal_seat_mean_shares") or evidence.get("shares") or {}
+    ideology = params.get("ideology", {}).get(elim, {})
+    parties = [party for party in PARTIES if party in alive]
+    shrunk, weight = shrink_distribution(
+        empirical=empirical,
+        prior=ideology,
+        parties=parties,
+        seats=int(evidence.get("seat_observations", evidence.get("seats", 0)) or 0),
+        variance=evidence.get("between_seat_variance", {}),
+        shrinkage_k=_scalar(params, "POOL_SHRINKAGE_K", 1.0),
+    )
+    class_weight = None
+    class_seats = 0
+    use_class = _scalar(params, "USE_CLASS_EFFECTS", 1.0) >= 0.5
+    class_evidence = params.get(
+        "POSTERIOR_SCENARIO_EVIDENCE_BY_CLASS", {}
+    ).get(str(seat_class or "").strip(), {})
+    if use_class and class_evidence:
+        scenario_key = f"{elim}|{alive_key}"
+        class_scenario = class_evidence.get(scenario_key)
+        if class_scenario:
+            class_seats = int(
+                class_scenario.get(
+                    "seat_observations",
+                    class_scenario.get("seats", 0),
+                )
+                or 0
+            )
+            shrunk, class_weight = shrink_distribution(
+                empirical=class_scenario.get("equal_seat_mean_shares", {}),
+                prior=shrunk,
+                parties=parties,
+                seats=class_seats,
+                variance=class_scenario.get("between_seat_variance", {}),
+                shrinkage_k=_scalar(
+                    params,
+                    "CLASS_EFFECT_SHRINKAGE_K",
+                    10.0,
+                ),
+            )
+        elif _nearest_field_enabled(params):
+            nearest, diagnostic = nearest_scenario_distribution(
+                eliminated=elim,
+                requested_alive=parties,
+                scenario_evidence=class_evidence,
+                ideology_prior=shrunk,
+                shrinkage_k=_scalar(
+                    params,
+                    "CLASS_EFFECT_SHRINKAGE_K",
+                    10.0,
+                ),
+                **_nearest_field_options(params),
+            )
+            if nearest:
+                shrunk = nearest
+                class_weight = diagnostic.get("evidence_weight")
+                class_seats = sum(
+                    int(
+                        class_evidence.get(key, {}).get(
+                            "seat_observations", 0
+                        )
+                        or 0
+                    )
+                    for key in diagnostic.get("matched_scenarios", [])
+                )
+
+    return shrunk, weight, class_weight, class_seats
 
 
 def _apply_protected_entry(
@@ -144,7 +274,9 @@ def get_preference_weights(
     seat_state: str = "NAT",
     division_key: str | None = None,
     seat_flows: dict[str, dict[str, float]] | None = None,
+    seat_flow_evidence: dict[str, dict] | None = None,
     aec_row_party: str | None = None,
+    seat_class: str = "",
 ) -> tuple[dict[str, float], dict]:
     elim = str(elim_party or "").strip().upper()
     alive_arr = [p for p in [str(p).strip().upper() for p in alive_parties] if p in PARTIES]
@@ -173,7 +305,55 @@ def get_preference_weights(
     alive_key = "+".join(sorted(alive_arr))
 
     seat_flow = (seat_flows or {}).get(f"{elim}|{alive_key}")
+    scenario_key = f"{elim}|{alive_key}"
+    current_seat_evidence = (seat_flow_evidence or {}).get(scenario_key, {})
+    evidence_diagnostic = _scenario_evidence_diagnostic(params, scenario_key)
     if seat_flow:
+        if _evidence_shrinkage_enabled(params):
+            pooled, pooled_weight, class_weight, class_seats = _shrunk_pooled_scenario(
+                elim,
+                alive_key,
+                alive,
+                params,
+                seat_class,
+            )
+            if pooled:
+                scenario_evidence = params.get(
+                    "POSTERIOR_SCENARIO_EVIDENCE", {}
+                ).get(f"{elim}|{alive_key}", {})
+                shrunk, seat_weight = shrink_distribution(
+                    empirical=seat_flow,
+                    prior=pooled,
+                    parties=[party for party in PARTIES if party in alive],
+                    seats=max(
+                        float(current_seat_evidence.get("evidence_multiplier", 1.0) or 0.0),
+                        0.0,
+                    ),
+                    variance=scenario_evidence.get("between_seat_variance", {}),
+                    shrinkage_k=_seat_shrinkage_k(params, division_key),
+                )
+                vec = [shrunk.get(party, 0.0) for party in PARTIES]
+                vec = _normalise_alive(vec, alive)
+                return _dict_from_vector(vec), {
+                    "basis": "seat_pref_flow_shrunk",
+                    "coverage": coverage,
+                    "missing": [PARTIES[i] for i in missing],
+                    "anchor_weight": 0.0,
+                    "seat_evidence_weight": seat_weight,
+                    "seat_evidence_multiplier": float(
+                        current_seat_evidence.get("evidence_multiplier", 1.0) or 0.0
+                    ),
+                    "seat_evidence_method": current_seat_evidence.get("method", ""),
+                    "pooled_evidence_weight": pooled_weight,
+                    "class_evidence_weight": class_weight,
+                    "class_evidence_seats": class_seats,
+                    "position_conflict": bool(
+                        current_seat_evidence
+                        .get("position_conflict", False)
+                    ),
+                    **evidence_diagnostic,
+                }
+
         vec = [float(seat_flow.get(party, 0.0) or 0.0) for party in PARTIES]
         vec = _normalise_alive(vec, alive)
         return _dict_from_vector(vec), {
@@ -181,7 +361,64 @@ def get_preference_weights(
             "coverage": coverage,
             "missing": [PARTIES[i] for i in missing],
             "anchor_weight": 0.0,
+            "position_conflict": bool(
+                current_seat_evidence
+                .get("position_conflict", False)
+            ),
+            **evidence_diagnostic,
         }
+
+    if _evidence_shrinkage_enabled(params):
+        explicit_pooled, pooled_weight, class_weight, class_seats = _shrunk_pooled_scenario(
+            elim,
+            alive_key,
+            alive,
+            params,
+            seat_class,
+        )
+        if explicit_pooled:
+            matrix_weight = _clamp01(
+                _scalar(params, "MATRIX_POSTERIOR_BLEND_WEIGHT", 0.0)
+            )
+            posterior_vec = [
+                float(explicit_pooled.get(party, 0.0) or 0.0)
+                for party in PARTIES
+            ]
+            if aec_usable and aec_proj:
+                blended = [
+                    matrix_weight * aec_proj[i]
+                    + (1.0 - matrix_weight) * posterior_vec[i]
+                    for i in range(len(PARTIES))
+                ]
+                vec = _normalise_alive(blended, alive)
+                if matrix_weight <= 0:
+                    basis = "posterior_shrunk"
+                elif matrix_weight >= 1:
+                    basis = "aec"
+                else:
+                    basis = "matrix_posterior_explicit_blend"
+                return _dict_from_vector(vec), {
+                    "basis": basis,
+                    "coverage": coverage,
+                    "missing": [PARTIES[i] for i in missing],
+                    "anchor_weight": matrix_weight,
+                    "pooled_evidence_weight": pooled_weight,
+                    "class_evidence_weight": class_weight,
+                    "class_evidence_seats": class_seats,
+                    **evidence_diagnostic,
+                }
+
+            vec = _normalise_alive(posterior_vec, alive)
+            return _dict_from_vector(vec), {
+                "basis": "posterior_shrunk",
+                "coverage": coverage,
+                "missing": [PARTIES[i] for i in missing],
+                "anchor_weight": 0.0,
+                "pooled_evidence_weight": pooled_weight,
+                "class_evidence_weight": class_weight,
+                "class_evidence_seats": class_seats,
+                **evidence_diagnostic,
+            }
 
     if aec_perfect and not force_posterior_on_2cp:
         return _dict_from_vector(aec_proj), {
@@ -215,12 +452,30 @@ def get_preference_weights(
         if force_posterior_on_2cp:
             return _clamp01(_scalar(params, "AEC_2CP_ANCHOR_ON", 0.15))
         if aec_incomplete:
-            w = _clamp01(_scalar(params, "AEC_ANCHOR_WHEN_MISS", 0.4))
+            w = _clamp01(_scalar(params, "AEC_ANCHOR_WHEN_MISSING", 0.4))
             cap = _clamp01(_scalar(params, "AEC_MISMATCH_MAX", 0.3))
             return min(w, cap, 0.999999)
         return _clamp01((coverage - 0.5) / 0.4)
 
     post = params.get("POSTERIOR_SCENARIOS", {}).get(f"{elim}|{alive_key}")
+    pooled_evidence_weight = None
+    class_evidence_weight = None
+    class_evidence_seats = 0
+    if post and _evidence_shrinkage_enabled(params):
+        (
+            shrunk_post,
+            pooled_evidence_weight,
+            class_evidence_weight,
+            class_evidence_seats,
+        ) = _shrunk_pooled_scenario(
+            elim,
+            alive_key,
+            alive,
+            params,
+            seat_class,
+        )
+        if shrunk_post:
+            post = shrunk_post
 
     if post:
         vec = [0.0] * len(PARTIES)
@@ -256,18 +511,72 @@ def get_preference_weights(
             ]
             vec = _normalise_alive(blended, alive)
             return _dict_from_vector(vec), {
-                "basis": "posterior_aec_blend",
+                "basis": (
+                    "posterior_shrunk_aec_blend"
+                    if pooled_evidence_weight is not None
+                    else "posterior_aec_blend"
+                ),
                 "coverage": coverage,
                 "missing": [PARTIES[i] for i in missing],
                 "anchor_weight": w,
+                "pooled_evidence_weight": pooled_evidence_weight,
+                "class_evidence_weight": class_evidence_weight,
+                "class_evidence_seats": class_evidence_seats,
+                **evidence_diagnostic,
             }
 
         return _dict_from_vector(post_side), {
-            "basis": "posterior",
+            "basis": (
+                "posterior_shrunk"
+                if pooled_evidence_weight is not None
+                else "posterior"
+            ),
             "coverage": coverage,
             "missing": [PARTIES[i] for i in missing],
             "anchor_weight": 0.0,
+            "pooled_evidence_weight": pooled_evidence_weight,
+            "class_evidence_weight": (
+                class_evidence_weight
+                if pooled_evidence_weight is not None
+                else None
+            ),
+            "class_evidence_seats": (
+                class_evidence_seats
+                if pooled_evidence_weight is not None
+                else 0
+            ),
+            **evidence_diagnostic,
         }
+
+    if _evidence_shrinkage_enabled(params) and _nearest_field_enabled(params):
+        nearest, nearest_diagnostic = nearest_scenario_distribution(
+            eliminated=elim,
+            requested_alive=[party for party in PARTIES if party in alive],
+            scenario_evidence=params.get("POSTERIOR_SCENARIO_EVIDENCE", {}),
+            ideology_prior=params.get("ideology", {}).get(elim, {}),
+            shrinkage_k=_scalar(params, "NEAREST_FIELD_SHRINKAGE_K", 1.0),
+            **_nearest_field_options(params),
+        )
+        if nearest:
+            vec = [nearest.get(party, 0.0) for party in PARTIES]
+            vec = _normalise_alive(vec, alive)
+            return _dict_from_vector(vec), {
+                "basis": "posterior_nearest_field",
+                "coverage": coverage,
+                "missing": [PARTIES[i] for i in missing],
+                "anchor_weight": 0.0,
+                "nearest_distance": nearest_diagnostic.get("distance"),
+                "nearest_scenarios": "+".join(
+                    nearest_diagnostic.get("matched_scenarios", [])
+                ),
+                "pooled_evidence_weight": nearest_diagnostic.get(
+                    "evidence_weight"
+                ),
+                "pooled_evidence_seats": nearest_diagnostic.get(
+                    "evidence_seats", 0
+                ),
+                "pooled_mean_variance": 0.0,
+            }
 
     ideology = params.get("ideology", {}).get(elim)
 

@@ -1,8 +1,17 @@
+import os
 import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent
 sys.path.append(str(ROOT_DIR))
+
+APP_MODE = os.environ.get("FEDERAL_IRV_APP_MODE", "development").strip().lower()
+LEGACY_MODE = APP_MODE == "legacy"
+
+if LEGACY_MODE:
+    import SRC.loaders as _loaders
+
+    _loaders.RAW_DIR = ROOT_DIR / "data" / "legacy_app"
 
 import pandas as pd
 import streamlit as st
@@ -14,13 +23,11 @@ from SRC.loaders import (
     load_baseline_primary_by_state,
     load_baseline_results_by_seat,
     load_baseline_seats_by_state,
-    load_district_2cp_swing,
     load_params,
     load_partisan_vote_index,
     load_preference_matrices,
     load_projected_2cp,
     load_seat_metadata,
-    load_sheet_baseline_results,
 )
 
 
@@ -101,28 +108,33 @@ def elimination_position(row, position):
 
 @st.cache_data(show_spinner="Syncing Google Sheet inputs and loading model data...")
 def load_static_inputs():
-    sync_status = sync_inputs_from_google_sheet(st.secrets)
+    if LEGACY_MODE:
+        sync_status = {
+            "ok": True,
+            "synced": 0,
+            "skipped": [],
+            "errors": [],
+            "message": "Frozen legacy manual-evidence snapshot; live sync disabled",
+        }
+    else:
+        sync_status = sync_inputs_from_google_sheet(st.secrets)
     seats = load_seat_metadata()
     matrices = load_preference_matrices()
     params = load_params()
     projected_2cp = load_projected_2cp()
-    sheet_baseline_results = load_sheet_baseline_results()
     baseline_primary_by_state = load_baseline_primary_by_state()
     baseline_results_by_seat = load_baseline_results_by_seat()
     baseline_seats_by_state = load_baseline_seats_by_state()
     partisan_vote_index = load_partisan_vote_index()
-    district_2cp_swing = load_district_2cp_swing()
     return (
         seats,
         matrices,
         params,
         projected_2cp,
-        sheet_baseline_results,
         baseline_primary_by_state,
         baseline_results_by_seat,
         baseline_seats_by_state,
         partisan_vote_index,
-        district_2cp_swing,
         sync_status,
     )
 
@@ -133,43 +145,36 @@ def aggregate_primary(seats):
     return {party: totals[party] / total * 100 if total > 0 else 0.0 for party in PARTIES}
 
 
-def add_district_2cp_swing(results, sheet_results, district_swings):
-    if sheet_results.empty or district_swings.empty:
+def add_district_2cp_swing(results, baseline_results):
+    if baseline_results.empty:
         results["district_2cp_swing"] = pd.NA
         return results
 
-    cols = [
-        "division_key",
-        "sheet_winner",
-        "sheet_winner_pct",
-        "sheet_final_two",
-    ]
-    merged = (
-        results
-        .merge(sheet_results[cols], on="division_key", how="left")
-        .merge(district_swings, on="division_key", how="left")
+    baseline = baseline_results[["division_key", *[f"{party}_2CP" for party in PARTIES]]].copy()
+    baseline["baseline_final_two"] = baseline.apply(
+        lambda row: "+".join(
+            sorted(
+                party
+                for party in PARTIES
+                if float(row.get(f"{party}_2CP", 0.0) or 0.0) > 1e-9
+            )
+        ),
+        axis=1,
     )
+    merged = results.merge(baseline, on="division_key", how="left")
 
-    comparable = (
-        merged["district_2cp_swing"].notna()
-        & (merged["winner"] == merged["sheet_winner"])
-        & (merged["final_two"] == merged["sheet_final_two"])
-    )
-    merged.loc[comparable, "district_2cp_swing"] = (
-        merged.loc[comparable, "district_2cp_swing"]
-        + (
-            merged.loc[comparable, "winner_pct"]
-            - merged.loc[comparable, "sheet_winner_pct"]
-        ) * 100
-    )
-    merged.loc[~comparable, "district_2cp_swing"] = pd.NA
+    def winner_swing(row):
+        winner = row.get("winner")
+        if row.get("final_two") != row.get("baseline_final_two"):
+            return pd.NA
+        baseline_share = row.get(f"{winner}_2CP")
+        if pd.isna(baseline_share):
+            return pd.NA
+        return float(row.get("winner_pct", 0.0) or 0.0) * 100 - float(baseline_share)
 
+    merged["district_2cp_swing"] = merged.apply(winner_swing, axis=1)
     return merged.drop(
-        columns=[
-            "sheet_winner",
-            "sheet_winner_pct",
-            "sheet_final_two",
-        ],
+        columns=[*[f"{party}_2CP" for party in PARTIES], "baseline_final_two"],
         errors="ignore",
     )
 
@@ -235,10 +240,19 @@ def render_result_table(df):
     )
 
 
-st.set_page_config(page_title="Federal IRV Model", layout="wide")
-st.title("Federal IRV Election Model")
+page_title = "Federal IRV Model — Legacy Backup" if LEGACY_MODE else "Federal IRV Model"
+st.set_page_config(page_title=page_title, layout="wide")
+st.title(
+    "Federal IRV Election Model — Legacy Backup"
+    if LEGACY_MODE
+    else "Federal IRV Election Model"
+)
 
-if st.sidebar.button("Refresh Google Sheet inputs"):
+if LEGACY_MODE:
+    st.sidebar.warning(
+        "Frozen backup: manual preference evidence, original fallback logic, and no live Sheet sync."
+    )
+elif st.sidebar.button("Refresh Google Sheet inputs"):
     load_static_inputs.clear()
     st.rerun()
 
@@ -247,12 +261,10 @@ if st.sidebar.button("Refresh Google Sheet inputs"):
     matrices,
     params,
     projected_2cp,
-    sheet_baseline_results,
     baseline_primary_by_state,
     baseline_results_by_seat,
     baseline_seats_by_state,
     partisan_vote_index,
-    district_2cp_swing,
     sync_status,
 ) = load_static_inputs()
 if sync_status.get("synced", 0) > 0:
@@ -295,7 +307,7 @@ apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
 adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index, params=params)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
-results_df = add_district_2cp_swing(results_df, sheet_baseline_results, district_2cp_swing)
+results_df = add_district_2cp_swing(results_df, baseline_results_by_seat)
 
 if selected_state != "National":
     view_results = results_df[results_df["state"] == selected_state].copy()
@@ -569,6 +581,13 @@ trace_columns = [
     "basis",
     "coverage",
     "anchor_weight",
+    "reliability",
+    "reliability_reason",
+    "pooled_evidence_seats",
+    "pooled_mean_variance",
+    "class_evidence_seats",
+    "nearest_distance",
+    "position_conflict",
     "missing",
     *PARTIES,
     *[f"{party}_swing" for party in PARTIES],

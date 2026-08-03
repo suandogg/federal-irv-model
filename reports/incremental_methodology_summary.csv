@@ -1,0 +1,5 @@
+stage,USE_EVIDENCE_SHRINKAGE,USE_NEAREST_FIELD_MATCHING,USE_CLASS_EFFECTS,seats,winner_matches,runner_up_matches,final_two_matches,mean_absolute_winner_error_pp,nearest_field_rounds,seat_shrunk_rounds,pooled_shrunk_rounds,class_weighted_rounds
+1_pass_through_original_fallback,0,0,0,148,138,139,141,0.5319030125800187,0,0,0,0
+2_add_evidence_shrinkage,1,0,0,148,134,134,140,1.3012454263160373,0,141,214,0
+3_add_nearest_field,1,1,0,148,134,134,141,1.7305998960939242,76,141,213,0
+4_add_seat_class,1,1,1,148,132,132,139,1.7891430836160984,76,141,213,294

@@ -301,7 +301,64 @@ def load_baseline_results_by_seat() -> pd.DataFrame:
     return df
 
 
-def load_partisan_vote_index() -> pd.DataFrame:
+def _load_keyed_primary_pvi(path: Path) -> pd.DataFrame:
+    """Load party PVI columns from a wide calculation sheet by electorate name.
+
+    The Google Sheet calculation tabs are not sorted in the same order as the
+    presentation tabs, so these values must never be joined by row position.
+    """
+    if not path.exists():
+        return pd.DataFrame()
+
+    with path.open(newline="") as handle:
+        rows = list(csv.reader(handle))
+
+    header_idx = next(
+        (
+            idx
+            for idx, row in enumerate(rows)
+            if row
+            and (
+                str(row[0]).strip().upper() == "DIVISION"
+                or sum(str(value).strip().upper() == "PRIMARY PVI" for value in row)
+                >= len(PARTIES)
+            )
+        ),
+        None,
+    )
+    if header_idx is None or header_idx == 0:
+        return pd.DataFrame()
+
+    party_row = rows[header_idx - 1]
+    header_row = rows[header_idx]
+    pvi_columns: dict[str, int] = {}
+    active_party = ""
+    for col_idx in range(max(len(party_row), len(header_row))):
+        party_label = str(party_row[col_idx] if col_idx < len(party_row) else "").strip().upper()
+        if party_label in PARTIES:
+            active_party = party_label
+        header_label = str(header_row[col_idx] if col_idx < len(header_row) else "").strip().upper()
+        if active_party and header_label == "PRIMARY PVI":
+            pvi_columns[active_party] = col_idx
+
+    if set(pvi_columns) != set(PARTIES):
+        return pd.DataFrame()
+
+    records = []
+    for row in rows[header_idx + 1 :]:
+        division = _normalise_division(row[0] if row else "")
+        if not division:
+            continue
+        record = {"division": division, "division_key": division_key(division)}
+        for party, col_idx in pvi_columns.items():
+            value = row[col_idx] if col_idx < len(row) else ""
+            record[party] = _to_float(value, default=float("nan"))
+        records.append(record)
+
+    return pd.DataFrame(records).drop_duplicates("division_key", keep="first")
+
+
+def load_partisan_vote_index(params: dict | None = None) -> pd.DataFrame:
     path = RAW_DIR / "PARTISAN_VOTE_INDEX.csv"
     if not path.exists():
         return pd.DataFrame()
@@ -318,7 +375,43 @@ def load_partisan_vote_index() -> pd.DataFrame:
         if party in df.columns:
             df[party] = df[party].map(_to_float)
 
-    return df[["division", "division_key", *[party for party in PARTIES if party in df.columns]]]
+    # Build production PVI values from the named calculation rows.  The
+    # PARTISAN_VOTE_INDEX presentation tab has previously paired an
+    # alphabetically sorted electorate list with an unsorted value range,
+    # silently assigning one seat's strengths to another.  Joining the source
+    # tabs by division_key makes row reordering harmless.
+    additive = _load_keyed_primary_pvi(RAW_DIR / "PRIMARY_EFFECTIVE.csv")
+    logit_values = _load_keyed_primary_pvi(RAW_DIR / "LOGIT_PVI.csv")
+    if additive.empty:
+        return df[["division", "division_key", *[party for party in PARTIES if party in df.columns]]]
+
+    state_by_key = df.set_index("division_key")["state"].to_dict()
+    use_logit = ((params or {}).get("primary_model", {})).get("use_logit", {})
+    keyed_logit = logit_values.set_index("division_key") if not logit_values.empty else pd.DataFrame()
+
+    records = []
+    for _, row in additive.iterrows():
+        key = row["division_key"]
+        if key not in state_by_key:
+            continue
+        record = {
+            "division": row["division"],
+            "division_key": key,
+            "state": state_by_key[key],
+        }
+        for party in PARTIES:
+            value = row.get(party, float("nan"))
+            if bool(use_logit.get(party, False)) and not keyed_logit.empty and key in keyed_logit.index:
+                logit_value = keyed_logit.at[key, party]
+                if not pd.isna(logit_value):
+                    value = logit_value
+            record[party] = 0.0 if pd.isna(value) else float(value)
+        records.append(record)
+
+    corrected = pd.DataFrame(records)
+    if corrected.empty:
+        return df[["division", "division_key", *[party for party in PARTIES if party in df.columns]]]
+    return corrected[["division", "division_key", "state", *PARTIES]]
 
 
 def load_district_2cp_swing() -> pd.DataFrame:

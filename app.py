@@ -125,7 +125,7 @@ def load_static_inputs():
     baseline_primary_by_state = load_baseline_primary_by_state()
     baseline_results_by_seat = load_baseline_results_by_seat()
     baseline_seats_by_state = load_baseline_seats_by_state()
-    partisan_vote_index = load_partisan_vote_index()
+    partisan_vote_index = load_partisan_vote_index(params)
     return (
         seats,
         matrices,

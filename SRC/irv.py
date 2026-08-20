@@ -256,6 +256,8 @@ def apply_statewide_primary_adjustment(
     targets: dict[str, float],
     partisan_vote_index: pd.DataFrame | None = None,
     params: dict | None = None,
+    baseline_results_by_seat: pd.DataFrame | None = None,
+    baseline_primary_by_state: dict[str, dict[str, float]] | None = None,
     iterations: int = 8,
 ) -> pd.DataFrame:
     adjusted = seats.copy()
@@ -269,6 +271,11 @@ def apply_statewide_primary_adjustment(
     primary_model = (params or {}).get("primary_model", {})
     model_a = primary_model.get("a", {})
     use_logit = primary_model.get("use_logit", {})
+
+    baseline_national = (baseline_primary_by_state or {}).get("National", {})
+    baseline_by_seat = pd.DataFrame()
+    if baseline_results_by_seat is not None and not baseline_results_by_seat.empty:
+        baseline_by_seat = baseline_results_by_seat.set_index("division_key")
 
     def clamp_share(value: float) -> float:
         return min(max(value, 1e-9), 1.0 - 1e-9)
@@ -292,20 +299,71 @@ def apply_statewide_primary_adjustment(
                 continue
 
             raw_values = {}
+            anchored_parties = set()
             for party in PARTIES:
                 pvi_value = float(pvi.at[div_key, party]) if party in pvi.columns else 0.0
                 strength = float(model_a.get(party, 1.0))
+                baseline_col = f"{party}_primary"
+                has_seat_baseline = (
+                    party in {"GRN", "IND"}
+                    and not baseline_by_seat.empty
+                    and div_key in baseline_by_seat.index
+                    and baseline_col in baseline_by_seat.columns
+                    and pd.notna(baseline_by_seat.at[div_key, baseline_col])
+                )
+                if has_seat_baseline:
+                    seat_baseline = float(baseline_by_seat.at[div_key, baseline_col]) / 100.0
+                    national_baseline = float(baseline_national.get(party, targets.get(party, 0.0))) / 100.0
+                    if party == "IND":
+                        configured = row.get("ind_swing_responsiveness")
+                        if pd.notna(configured):
+                            strength = float(configured)
+                        else:
+                            status = str(row.get("ind_candidate_status", "") or "").strip().upper()
+                            if not status:
+                                if str(row.get("held_by", "") or "").strip().upper() == "IND":
+                                    status = "INCUMBENT"
+                                elif seat_baseline >= 0.10:
+                                    status = "ESTABLISHED"
+                                elif seat_baseline <= 0:
+                                    status = "NONE"
+                            strength = {
+                                "INCUMBENT": 0.5,
+                                "ESTABLISHED": 0.8,
+                                "NEW": 1.1,
+                                "NONE": 0.0,
+                            }.get(status, strength)
+                    raw_values[party] = max(
+                        seat_baseline + strength * (target_shares[party] - national_baseline),
+                        0.0,
+                    )
+                    anchored_parties.add(party)
+                    continue
                 if bool(use_logit.get(party, False)):
                     raw_values[party] = inv_logit(logit(target_shares[party]) + strength * pvi_value)
                 else:
                     raw_values[party] = max(target_shares[party] + strength * pvi_value, 0.0)
 
-            raw_total = sum(raw_values.values())
-            if raw_total > 0:
-                for party in PARTIES:
-                    adjusted.at[idx, party] = raw_values[party] / raw_total
+            anchored_total = min(sum(raw_values[p] for p in anchored_parties), 1.0)
+            other_parties = [party for party in PARTIES if party not in anchored_parties]
+            other_total = sum(raw_values[party] for party in other_parties)
+            if anchored_parties and other_total > 0:
+                for party in anchored_parties:
+                    adjusted.at[idx, party] = raw_values[party]
+                for party in other_parties:
+                    adjusted.at[idx, party] = (
+                        raw_values[party] / other_total * (1.0 - anchored_total)
+                    )
+            else:
+                raw_total = sum(raw_values.values())
+                if raw_total > 0:
+                    for party in PARTIES:
+                        adjusted.at[idx, party] = raw_values[party] / raw_total
 
-    for _ in range(iterations):
+    # Baseline-anchored GRN/IND values already encode their national response.
+    # Global calibration would shrink their geographic concentration a second time.
+    calibration_iterations = 0 if not baseline_by_seat.empty else iterations
+    for _ in range(calibration_iterations):
         current_totals = {party: adjusted[party].sum() for party in PARTIES}
         current_total = sum(current_totals.values())
 

@@ -305,7 +305,14 @@ if abs(total_primary - 100.0) > 0.01:
 selected_state = st.selectbox("View", ["National", *STATE_ORDER], index=0)
 apply_calibration = st.checkbox("Apply supported-AEC calibration", value=True)
 
-adjusted_seats = apply_statewide_primary_adjustment(seats, targets, partisan_vote_index, params=params)
+adjusted_seats = apply_statewide_primary_adjustment(
+    seats,
+    targets,
+    partisan_vote_index,
+    params=params,
+    baseline_results_by_seat=baseline_results_by_seat,
+    baseline_primary_by_state=baseline_primary_by_state,
+)
 results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
 results_df = add_district_2cp_swing(results_df, baseline_results_by_seat)
 

@@ -92,6 +92,8 @@ def load_seat_metadata() -> pd.DataFrame:
                 "held_by",
                 "current_mp",
                 "current_margin",
+                "ind_candidate_status",
+                "ind_swing_responsiveness",
                 "notes",
             ]
         ],
@@ -160,6 +162,8 @@ def load_seat_helper() -> pd.DataFrame:
         fallback["status"] = "Active"
         fallback["current_mp"] = ""
         fallback["current_margin"] = ""
+        fallback["ind_candidate_status"] = ""
+        fallback["ind_swing_responsiveness"] = float("nan")
         fallback["notes"] = ""
         return fallback
 
@@ -174,6 +178,8 @@ def load_seat_helper() -> pd.DataFrame:
             "Held party": "held_party",
             "Current MP": "current_mp",
             "Current margin": "current_margin",
+            "IND candidate status": "ind_candidate_status",
+            "IND swing responsiveness": "ind_swing_responsiveness",
             "Notes": "notes",
         }
     )
@@ -198,6 +204,13 @@ def load_seat_helper() -> pd.DataFrame:
     df["held_by"] = df["held_party"].map(_normalise_held_party)
     df["current_mp"] = text_col("current_mp")
     df["current_margin"] = text_col("current_margin")
+    df["ind_candidate_status"] = text_col("ind_candidate_status")
+    if "ind_swing_responsiveness" in df.columns:
+        df["ind_swing_responsiveness"] = df["ind_swing_responsiveness"].map(
+            lambda value: _to_float(value, default=float("nan"))
+        )
+    else:
+        df["ind_swing_responsiveness"] = float("nan")
     df["notes"] = text_col("notes")
 
     return df[
@@ -212,6 +225,8 @@ def load_seat_helper() -> pd.DataFrame:
             "held_by",
             "current_mp",
             "current_margin",
+            "ind_candidate_status",
+            "ind_swing_responsiveness",
             "notes",
         ]
     ]

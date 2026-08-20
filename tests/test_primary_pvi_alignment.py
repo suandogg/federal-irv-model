@@ -1,4 +1,5 @@
 import pytest
+import pandas as pd
 
 import SRC.loaders as loaders
 from SRC.constants import PARTIES
@@ -68,3 +69,54 @@ def test_default_wentworth_primary_is_not_replaced_by_national_pattern():
     assert 13.0 < wentworth["ALP"] * 100 < 18.0
     assert wentworth["IND"] * 100 > 20.0
     assert sum(wentworth[party] for party in PARTIES) == pytest.approx(1.0)
+
+
+def test_grn_and_ind_preserve_seat_baselines_and_apply_only_national_swing():
+    seats = pd.DataFrame(
+        [
+            {
+                "division": "Example",
+                "division_key": "EXAMPLE",
+                "held_by": "IND",
+                "ind_candidate_status": "Incumbent",
+                "ind_swing_responsiveness": float("nan"),
+                **{party: 1 / len(PARTIES) for party in PARTIES},
+            }
+        ]
+    )
+    pvi = pd.DataFrame(
+        [{"division_key": "EXAMPLE", **{party: 0.0 for party in PARTIES}}]
+    )
+    baseline = pd.DataFrame(
+        [{"division_key": "EXAMPLE", "GRN_primary": 30.0, "IND_primary": 40.0}]
+    )
+    baseline_national = {"National": {"GRN": 12.0, "IND": 7.0}}
+    params = {
+        "primary_model": {
+            "a": {"GRN": 0.8, "IND": 0.7},
+            "use_logit": {},
+        }
+    }
+
+    unchanged = apply_statewide_primary_adjustment(
+        seats,
+        {"ALP": 30, "LNP": 30, "GRN": 12, "ON": 10, "IND": 7, "OTH": 11},
+        pvi,
+        params=params,
+        baseline_results_by_seat=baseline,
+        baseline_primary_by_state=baseline_national,
+    ).iloc[0]
+    swung = apply_statewide_primary_adjustment(
+        seats,
+        {"ALP": 28, "LNP": 28, "GRN": 14, "ON": 10, "IND": 9, "OTH": 11},
+        pvi,
+        params=params,
+        baseline_results_by_seat=baseline,
+        baseline_primary_by_state=baseline_national,
+    ).iloc[0]
+
+    assert unchanged["GRN"] == pytest.approx(0.30)
+    assert unchanged["IND"] == pytest.approx(0.40)
+    assert swung["GRN"] == pytest.approx(0.30 + 0.8 * 0.02)
+    assert swung["IND"] == pytest.approx(0.40 + 0.5 * 0.02)
+    assert sum(swung[party] for party in PARTIES) == pytest.approx(1.0)

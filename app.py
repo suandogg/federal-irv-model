@@ -17,6 +17,7 @@ import pandas as pd
 import streamlit as st
 
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
+from SRC.candidate_irv import load_candidate_irv_evidence, run_candidate_irv_all
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.live_sheet_sync import sync_inputs_from_google_sheet
 from SRC.loaders import (
@@ -313,7 +314,30 @@ adjusted_seats = apply_statewide_primary_adjustment(
     baseline_results_by_seat=baseline_results_by_seat,
     baseline_primary_by_state=baseline_primary_by_state,
 )
-results_df, traces_df = run_irv_all(adjusted_seats, matrices, params, apply_calibration=apply_calibration)
+candidate_level_ind_enabled = (
+    float(params.get("scalars", {}).get("USE_CANDIDATE_LEVEL_IND_IRV", 1.0)) >= 0.5
+)
+st.caption(
+    "Independent engine: "
+    + (
+        "Candidate-level IRV"
+        if candidate_level_ind_enabled
+        else "Corrected PVI with aggregated IND"
+    )
+)
+if candidate_level_ind_enabled:
+    candidate_evidence = load_candidate_irv_evidence()
+    results_df, traces_df = run_candidate_irv_all(
+        adjusted_seats,
+        matrices,
+        params,
+        candidate_evidence,
+        apply_calibration=apply_calibration,
+    )
+else:
+    results_df, traces_df = run_irv_all(
+        adjusted_seats, matrices, params, apply_calibration=apply_calibration
+    )
 results_df = add_district_2cp_swing(results_df, baseline_results_by_seat)
 
 if selected_state != "National":

@@ -61,3 +61,4 @@ NEAREST_FIELD_MAX_DISTANCE,1,Shadow-test safety restriction: nearest-field donor
 NEAREST_FIELD_REQUIRE_ALL_REQUESTED,1,Shadow-test safety restriction: a donor must contain every party alive in the requested scenario.,,,,,,,,,,
 USE_CLASS_EFFECTS,0,Seat-class effects remain disabled after only a marginal held-out gain and weaker reconstruction.,,,,,,,,,,
 CLASS_EFFECT_SHRINKAGE_K,10,"Strongly partially pools Inner metro, Outer metro, Provincial and Rural effects toward national evidence.",,,,,,,,,,
+USE_CANDIDATE_LEVEL_IND_IRV,1,Set to 1 to keep multiple Independent candidates separate until elimination; set to 0 to use corrected PVI with one aggregated IND category.,,,,,,,,,,

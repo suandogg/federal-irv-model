@@ -24,6 +24,7 @@ class FakeSheet:
 def test_default_live_sync_batches_only_production_inputs(monkeypatch, tmp_path):
     manifest = [
         ("PARAMS", "PARAMS.csv"),
+        ("PARTISAN_VOTE_INDEX", "PARTISAN_VOTE_INDEX.csv"),
         ("LOGIT_PVI", "LOGIT_PVI.csv"),
         ("SHRINKAGE_LEVEL_VALIDATION", "SHRINKAGE_LEVEL_VALIDATION.csv"),
     ]
@@ -40,9 +41,10 @@ def test_default_live_sync_batches_only_production_inputs(monkeypatch, tmp_path)
 
     assert status["ok"] is True
     assert status["synced"] == 2
-    assert sheet.requested_batches == [["'PARAMS'", "'LOGIT_PVI'"]]
+    assert sheet.requested_batches == [["'PARAMS'", "'PARTISAN_VOTE_INDEX'"]]
     assert (tmp_path / "PARAMS.csv").exists()
-    assert (tmp_path / "LOGIT_PVI.csv").exists()
+    assert (tmp_path / "PARTISAN_VOTE_INDEX.csv").exists()
+    assert not (tmp_path / "LOGIT_PVI.csv").exists()
     assert not (tmp_path / "SHRINKAGE_LEVEL_VALIDATION.csv").exists()
 
 
@@ -52,4 +54,6 @@ def test_live_sync_scope_excludes_aborted_and_diagnostic_outputs():
     assert "CATEGORY_FLOW_PRODUCTION_IMPACT.csv" not in live_sync.PRODUCTION_SYNC_CSV_FILES
     assert "PARAMS.csv" in live_sync.PRODUCTION_SYNC_CSV_FILES
     assert "CATEGORY_PREF_FLOWS_LONG.csv" in live_sync.PRODUCTION_SYNC_CSV_FILES
-    assert len(live_sync.PRODUCTION_SYNC_CSV_FILES) == 25
+    assert "PARTISAN_VOTE_INDEX.csv" in live_sync.PRODUCTION_SYNC_CSV_FILES
+    assert "LOGIT_PVI.csv" not in live_sync.PRODUCTION_SYNC_CSV_FILES
+    assert len(live_sync.PRODUCTION_SYNC_CSV_FILES) == 24

@@ -371,16 +371,7 @@ def load_partisan_vote_index(params: dict | None = None) -> pd.DataFrame:
     df["division"] = df["division"].map(_normalise_division)
     df["division_key"] = df["division"].map(division_key)
 
-    for party in PARTIES:
-        if party in df.columns:
-            df[party] = df[party].map(_to_float)
-
-    # PARTISAN_VOTE_INDEX is the editable additive-strength input.  For parties
-    # explicitly configured with UseLogit=True, select the electorate-keyed
-    # logit value instead.  Never join either source by row position.
-    logit_values = _load_keyed_primary_pvi(RAW_DIR / "LOGIT_PVI.csv")
     use_logit = ((params or {}).get("primary_model", {})).get("use_logit", {})
-    keyed_logit = logit_values.set_index("division_key") if not logit_values.empty else pd.DataFrame()
 
     records = []
     for _, row in df.iterrows():
@@ -391,11 +382,16 @@ def load_partisan_vote_index(params: dict | None = None) -> pd.DataFrame:
             "state": row["state"],
         }
         for party in PARTIES:
-            value = row.get(party, float("nan"))
-            if bool(use_logit.get(party, False)) and not keyed_logit.empty and key in keyed_logit.index:
-                logit_value = keyed_logit.at[key, party]
-                if not pd.isna(logit_value):
-                    value = logit_value
+            # Every electorate-primary input lives in this one editable tab.
+            # Logit-modelled parties use an explicitly labelled column; the
+            # party-code fallback preserves frozen legacy snapshots.
+            source_column = (
+                f"{party}_LOGIT_PVI"
+                if bool(use_logit.get(party, False))
+                and f"{party}_LOGIT_PVI" in df.columns
+                else party
+            )
+            value = _to_float(row.get(source_column, float("nan")), default=float("nan"))
             record[party] = 0.0 if pd.isna(value) else float(value)
         records.append(record)
 

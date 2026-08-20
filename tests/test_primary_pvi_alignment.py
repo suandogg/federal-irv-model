@@ -1,5 +1,6 @@
 import pytest
 
+import SRC.loaders as loaders
 from SRC.constants import PARTIES
 from SRC.irv import apply_statewide_primary_adjustment
 from SRC.loaders import load_params, load_partisan_vote_index, load_seat_metadata
@@ -34,6 +35,24 @@ def test_wentworth_uses_its_named_calculation_row():
     assert wentworth["OTH"] == pytest.approx(-0.07)
 
 
+def test_on_logit_pvi_comes_from_authoritative_partisan_tab(monkeypatch, tmp_path):
+    (tmp_path / "PARTISAN_VOTE_INDEX.csv").write_text(
+        "Division,State,ALP,LNP,GRN,ON_LOGIT_PVI,IND,OTH\n"
+        "Example,NSW,0.1,0.2,0.3,-1.25,0.4,0.5\n"
+    )
+    # A conflicting legacy source must have no effect on production loading.
+    (tmp_path / "LOGIT_PVI.csv").write_text(
+        ",ON\nDivision,Primary PVI\nExample,9.0\n"
+    )
+    monkeypatch.setattr(loaders, "RAW_DIR", tmp_path)
+
+    pvi = loaders.load_partisan_vote_index(
+        {"primary_model": {"use_logit": {"ON": True}}}
+    ).set_index("division_key")
+
+    assert pvi.loc["EXAMPLE", "ON"] == pytest.approx(-1.25)
+
+
 def test_default_wentworth_primary_is_not_replaced_by_national_pattern():
     params = load_params()
     seats = load_seat_metadata()
@@ -49,4 +68,3 @@ def test_default_wentworth_primary_is_not_replaced_by_national_pattern():
     assert 13.0 < wentworth["ALP"] * 100 < 18.0
     assert wentworth["IND"] * 100 > 20.0
     assert sum(wentworth[party] for party in PARTIES) == pytest.approx(1.0)
-

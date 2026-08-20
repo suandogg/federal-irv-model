@@ -35,7 +35,6 @@ PRODUCTION_SYNC_CSV_FILES = frozenset(
         "BASELINE_RESULTS_BY_SEAT.csv",
         "BASELINE_SEATS_BY_STATE.csv",
         "PARTISAN_VOTE_INDEX.csv",
-        "LOGIT_PVI.csv",
         "IDEOLOGY.csv",
         "SIPHON.csv",
         "Proj_2CP.csv",

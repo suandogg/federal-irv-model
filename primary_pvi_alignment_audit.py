@@ -8,7 +8,6 @@ from SRC.constants import PARTIES
 from SRC.irv import apply_statewide_primary_adjustment
 from SRC.loaders import (
     RAW_DIR,
-    _load_keyed_primary_pvi,
     _to_float,
     division_key,
     load_params,
@@ -80,19 +79,6 @@ def main() -> None:
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     comparison.to_csv(REPORT_DIR / "primary_pvi_alignment_audit.csv", index=False)
-
-    # Keep the presentation tab aligned too.  It remains on the additive PVI
-    # scale; production selects LOGIT_PVI by electorate for parties configured
-    # with UseLogit=True.
-    additive = _load_keyed_primary_pvi(RAW_DIR / "PRIMARY_EFFECTIVE.csv")
-    states = displayed.set_index("division_key")["state"].to_dict()
-    additive = additive[additive["division_key"].isin(states)].copy()
-    additive["State"] = additive["division_key"].map(states)
-    additive = additive.rename(columns={"division": "Division"})
-    additive[["Division", "State", *PARTIES]].sort_values("Division").to_csv(
-        RAW_DIR / "PARTISAN_VOTE_INDEX.csv",
-        index=False,
-    )
 
     affected = int((comparison["max_abs_primary_delta_pp"] > 0.01).sum())
     print(f"Audited {len(comparison)} electorates; {affected} change by more than 0.01pp.")

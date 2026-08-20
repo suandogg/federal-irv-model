@@ -84,9 +84,9 @@ def test_grn_and_ind_preserve_seat_baselines_and_apply_only_national_swing():
             }
         ]
     )
-    pvi = pd.DataFrame(
-        [{"division_key": "EXAMPLE", **{party: 0.0 for party in PARTIES}}]
-    )
+    pvi_values = {party: 0.0 for party in PARTIES}
+    pvi_values.update({"GRN": 0.18, "IND": 0.33})
+    pvi = pd.DataFrame([{"division_key": "EXAMPLE", **pvi_values}])
     baseline = pd.DataFrame(
         [{"division_key": "EXAMPLE", "GRN_primary": 30.0, "IND_primary": 40.0}]
     )

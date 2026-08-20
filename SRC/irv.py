@@ -304,16 +304,20 @@ def apply_statewide_primary_adjustment(
                 pvi_value = float(pvi.at[div_key, party]) if party in pvi.columns else 0.0
                 strength = float(model_a.get(party, 1.0))
                 baseline_col = f"{party}_primary"
-                has_seat_baseline = (
+                has_pvi_anchor = (
                     party in {"GRN", "IND"}
-                    and not baseline_by_seat.empty
-                    and div_key in baseline_by_seat.index
-                    and baseline_col in baseline_by_seat.columns
-                    and pd.notna(baseline_by_seat.at[div_key, baseline_col])
+                    and party in baseline_national
                 )
-                if has_seat_baseline:
-                    seat_baseline = float(baseline_by_seat.at[div_key, baseline_col]) / 100.0
-                    national_baseline = float(baseline_national.get(party, targets.get(party, 0.0))) / 100.0
+                if has_pvi_anchor:
+                    national_baseline = float(baseline_national[party]) / 100.0
+                    seat_baseline = None
+                    if (
+                        not baseline_by_seat.empty
+                        and div_key in baseline_by_seat.index
+                        and baseline_col in baseline_by_seat.columns
+                        and pd.notna(baseline_by_seat.at[div_key, baseline_col])
+                    ):
+                        seat_baseline = float(baseline_by_seat.at[div_key, baseline_col]) / 100.0
                     if party == "IND":
                         configured = row.get("ind_swing_responsiveness")
                         if pd.notna(configured):
@@ -323,9 +327,9 @@ def apply_statewide_primary_adjustment(
                             if not status:
                                 if str(row.get("held_by", "") or "").strip().upper() == "IND":
                                     status = "INCUMBENT"
-                                elif seat_baseline >= 0.10:
+                                elif seat_baseline is not None and seat_baseline >= 0.10:
                                     status = "ESTABLISHED"
-                                elif seat_baseline <= 0:
+                                elif seat_baseline is not None and seat_baseline <= 0:
                                     status = "NONE"
                             strength = {
                                 "INCUMBENT": 0.5,
@@ -333,10 +337,15 @@ def apply_statewide_primary_adjustment(
                                 "NEW": 1.1,
                                 "NONE": 0.0,
                             }.get(status, strength)
-                    raw_values[party] = max(
-                        seat_baseline + strength * (target_shares[party] - national_baseline),
-                        0.0,
-                    )
+                    if party == "IND" and status == "NONE":
+                        raw_values[party] = 0.0
+                    else:
+                        raw_values[party] = max(
+                            national_baseline
+                            + pvi_value
+                            + strength * (target_shares[party] - national_baseline),
+                            0.0,
+                        )
                     anchored_parties.add(party)
                     continue
                 if bool(use_logit.get(party, False)):
@@ -360,7 +369,7 @@ def apply_statewide_primary_adjustment(
                     for party in PARTIES:
                         adjusted.at[idx, party] = raw_values[party] / raw_total
 
-    # Baseline-anchored GRN/IND values already encode their national response.
+    # PVI-anchored GRN/IND values already encode their national response.
     # Global calibration would shrink their geographic concentration a second time.
     calibration_iterations = 0 if not baseline_by_seat.empty else iterations
     for _ in range(calibration_iterations):

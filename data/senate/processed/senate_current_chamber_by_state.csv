@@ -1,0 +1,10 @@
+state,ALP_seats,LNP_seats,GRN_seats,ON_seats,IND_seats,OTH_seats,total_seats
+NSW,4,5,2,1,0,0,12
+VIC,5,4,2,0,0,1,12
+QLD,4,4,2,2,0,0,12
+WA,5,4,2,1,0,0,12
+SA,5,5,2,0,0,0,12
+TAS,4,4,2,0,0,2,12
+ACT,1,0,0,0,1,0,2
+NT,1,1,0,0,0,0,2
+National,29,27,12,4,1,3,76

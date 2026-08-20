@@ -606,8 +606,11 @@ seat_trace["round"] = seat_trace["round"].astype(str)
 trace_columns = [
     "round",
     "eliminated",
+    "eliminated_candidate",
+    "eliminated_entity",
     "transfer",
     "alive_after",
+    "alive_candidates_after",
     "baseline_stage",
     "basis",
     "coverage",

@@ -368,6 +368,38 @@ def get_preference_weights(
             **evidence_diagnostic,
         }
 
+    # Explicit final-pair priors are deliberate model inputs and take
+    # precedence over pooled fallback evidence for the same alive set.
+    if elim == "LNP" and alive == {"ALP", "ON"}:
+        baselines = params.get("baselines", {})
+        p_on = baselines.get("LNP_TO_ON_BY_SEAT", {}).get(str(division_key or "").upper())
+        if p_on is None:
+            p_on = baselines.get("LNP_TO_ON", {}).get(
+                seat_state,
+                baselines.get("LNP_TO_ON", {}).get("NAT"),
+            )
+        if p_on is not None and math.isfinite(float(p_on)):
+            out = [0.0] * len(PARTIES)
+            out[PARTIES.index("ON")] = float(p_on)
+            out[PARTIES.index("ALP")] = 1.0 - float(p_on)
+            vec = _normalise_alive(out, alive)
+            return _dict_from_vector(vec), {
+                "basis": "lnp_to_alp_on_state_baseline",
+                "coverage": coverage,
+                "missing": [PARTIES[i] for i in missing],
+                "anchor_weight": 0.0,
+            }
+
+    # A complete seat-specific AEC row is stronger evidence than a pooled
+    # national scenario. ON-to-ALP/LNP remains the intentional exception.
+    if aec_perfect and not force_posterior_on_2cp:
+        return _dict_from_vector(aec_proj), {
+            "basis": "aec_perfect",
+            "coverage": coverage,
+            "missing": [PARTIES[i] for i in missing],
+            "anchor_weight": 1.0,
+        }
+
     if _evidence_shrinkage_enabled(params):
         explicit_pooled, pooled_weight, class_weight, class_seats = _shrunk_pooled_scenario(
             elim,
@@ -418,34 +450,6 @@ def get_preference_weights(
                 "class_evidence_weight": class_weight,
                 "class_evidence_seats": class_seats,
                 **evidence_diagnostic,
-            }
-
-    if aec_perfect and not force_posterior_on_2cp:
-        return _dict_from_vector(aec_proj), {
-            "basis": "aec_perfect",
-            "coverage": coverage,
-            "missing": [PARTIES[i] for i in missing],
-            "anchor_weight": 1.0,
-        }
-
-    if elim == "LNP" and alive == {"ALP", "ON"}:
-        baselines = params.get("baselines", {})
-        p_on = baselines.get("LNP_TO_ON_BY_SEAT", {}).get(str(division_key or "").upper())
-        if p_on is None:
-            p_on = baselines.get("LNP_TO_ON", {}).get(
-                seat_state,
-                baselines.get("LNP_TO_ON", {}).get("NAT"),
-            )
-        if p_on is not None and math.isfinite(float(p_on)):
-            out = [0.0] * len(PARTIES)
-            out[PARTIES.index("ON")] = float(p_on)
-            out[PARTIES.index("ALP")] = 1.0 - float(p_on)
-            vec = _normalise_alive(out, alive)
-            return _dict_from_vector(vec), {
-                "basis": "lnp_to_alp_on_state_baseline",
-                "coverage": coverage,
-                "missing": [PARTIES[i] for i in missing],
-                "anchor_weight": 0.0,
             }
 
     def resolve_anchor_weight() -> float:

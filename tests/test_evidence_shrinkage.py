@@ -86,7 +86,7 @@ class EvidenceShrinkageTests(unittest.TestCase):
         self.assertGreater(weights["ALP"], 0.4)
         self.assertLess(weights["ALP"], 0.9)
 
-    def test_optional_mode_uses_explicit_matrix_weight_without_seat_flow(self):
+    def test_complete_aec_row_precedes_pooled_evidence(self):
         params = {
             "scalars": {
                 "USE_EVIDENCE_SHRINKAGE": 1,
@@ -109,8 +109,38 @@ class EvidenceShrinkageTests(unittest.TestCase):
             params=params,
             seat_flows={},
         )
-        self.assertEqual(diagnostic["basis"], "matrix_posterior_explicit_blend")
-        self.assertAlmostEqual(weights["ALP"], 0.5)
+        self.assertEqual(diagnostic["basis"], "aec_perfect")
+        self.assertAlmostEqual(weights["ALP"], 0.8)
+
+    def test_lnp_alp_on_prior_precedes_pooled_evidence(self):
+        params = {
+            "scalars": {
+                "USE_EVIDENCE_SHRINKAGE": 1,
+                "POOL_SHRINKAGE_K": 0,
+                "MATRIX_POSTERIOR_BLEND_WEIGHT": 0,
+            },
+            "baselines": {
+                "LNP_TO_ON": {"NSW": 0.70, "NAT": 0.71},
+                "LNP_TO_ON_BY_SEAT": {},
+            },
+            "ideology": {"LNP": {"ALP": 0.1, "ON": 0.9}},
+            "POSTERIOR_SCENARIO_EVIDENCE": {
+                "LNP|ALP+ON": {
+                    "equal_seat_mean_shares": {"ALP": 0.18, "ON": 0.82},
+                    "between_seat_variance": {"ALP": 0.0, "ON": 0.0},
+                    "seat_observations": 1,
+                }
+            },
+        }
+        weights, diagnostic = get_preference_weights(
+            elim_party="LNP",
+            alive_parties=["ALP", "ON"],
+            aec_row={"ALP": 0.2, "ON": 0.8},
+            params=params,
+            seat_state="NSW",
+        )
+        self.assertEqual(diagnostic["basis"], "lnp_to_alp_on_state_baseline")
+        self.assertAlmostEqual(weights["ON"], 0.70)
 
     def test_exact_flow_uses_category_evidence_multiplier(self):
         params = {

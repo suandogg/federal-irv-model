@@ -49,3 +49,10 @@ def test_display_changes_do_not_mutate_summary():
     out=party_summary(frame,settings)
     pd.testing.assert_frame_equal(frame,original)
     assert out.Party.tolist()==['Different',settings['LNP_LABEL']]
+
+
+def test_complete_schema_loads_without_warnings():
+    settings,warnings=load_display_params()
+    assert not warnings
+    assert settings['COLOUR_PARTY_CELLS'] is True
+    assert len(settings)==74

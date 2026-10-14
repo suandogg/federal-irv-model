@@ -117,7 +117,7 @@ def load_display_params(path=None):
         seen = set()
         for row in rows:
             key = row.get('Parameter','').strip()
-            if key.startswith('COLOUR_'): key = key.removeprefix('COLOUR_')+'_COLOUR'
+            if key.startswith('COLOUR_') and key.removeprefix('COLOUR_') in PARTIES: key = key.removeprefix('COLOUR_')+'_COLOUR'
             if key not in specs:
                 warnings.append('Unknown display setting: '+key)
                 continue

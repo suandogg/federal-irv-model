@@ -20,6 +20,7 @@ from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
 from SRC.candidate_irv import load_candidate_irv_evidence, run_candidate_irv_all
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.live_sheet_sync import sync_inputs_from_google_sheet
+from SRC.input_refresh import refresh_model_inputs
 from SRC.loaders import (
     load_baseline_primary_by_state,
     load_baseline_results_by_seat,
@@ -252,7 +253,7 @@ if LEGACY_MODE:
         "Frozen backup: manual preference evidence, original fallback logic, and no live Sheet sync."
     )
 elif st.sidebar.button("Refresh Google Sheet inputs"):
-    load_static_inputs.clear()
+    refresh_model_inputs()
     st.rerun()
 
 (

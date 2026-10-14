@@ -8,6 +8,7 @@ from .forecast_params import load_forecast_params, parameter_table
 from .forecast_engine import fingerprint, run_forecast, uncertainty_profile
 from .candidate_irv import load_candidate_irv_evidence
 from .live_sheet_sync import sync_inputs_from_google_sheet
+from .input_refresh import refresh_model_inputs
 from .loaders import (load_seat_metadata,load_preference_matrices,load_params,
     load_partisan_vote_index,load_baseline_results_by_seat,load_baseline_primary_by_state)
 
@@ -42,8 +43,8 @@ def load_inputs():
 
 
 def render_forecast():
-    if st.sidebar.button('Refresh testing Sheet inputs'):
-        load_inputs.clear(); st.rerun()
+    if st.sidebar.button('Refresh Google Sheet inputs'):
+        refresh_model_inputs(); st.rerun()
     seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,status=load_inputs()
     display=display_settings()
     st.title(display['FORECAST_TITLE'])

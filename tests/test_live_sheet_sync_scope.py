@@ -56,4 +56,28 @@ def test_live_sync_scope_excludes_aborted_and_diagnostic_outputs():
     assert "CATEGORY_PREF_FLOWS_LONG.csv" in live_sync.PRODUCTION_SYNC_CSV_FILES
     assert "PARTISAN_VOTE_INDEX.csv" in live_sync.PRODUCTION_SYNC_CSV_FILES
     assert "LOGIT_PVI.csv" not in live_sync.PRODUCTION_SYNC_CSV_FILES
-    assert len(live_sync.PRODUCTION_SYNC_CSV_FILES) == 24
+    assert {"FORECAST PARAMS.csv", "DISPLAY PARAMS.csv", "CANDIDATE_CLASSIFICATION.csv"}.issubset(live_sync.PRODUCTION_SYNC_CSV_FILES)
+    assert len(live_sync.PRODUCTION_SYNC_CSV_FILES) == 27
+
+
+def test_testing_workbook_cannot_be_redirected_by_main_setting(monkeypatch, tmp_path):
+    path=tmp_path/'sheet_id.txt';path.write_text('testing-workbook')
+    monkeypatch.setattr(live_sync,'SHEET_ID_FILE',path)
+    monkeypatch.setenv('FEDERAL_IRV_SHEET_ID','main-workbook')
+    monkeypatch.delenv('FEDERAL_TESTING_SHEET_ID',raising=False)
+    assert live_sync.resolve_sheet_id({'google_sheet_id':'main-secret'})=='testing-workbook'
+
+
+def test_forecast_tab_refresh_changes_loaded_settings(monkeypatch,tmp_path):
+    from SRC.forecast_params import parameter_table,load_forecast_params
+    table=parameter_table();table.loc[table.Parameter=='SEED','Value']=42
+    values=[table.columns.tolist()]+table.values.tolist()
+    sheet=FakeSheet(['FORECAST PARAMS'])
+    sheet.values_batch_get=lambda ranges:{'valueRanges':[{'values':values}]}
+    monkeypatch.setattr(live_sync,'DATA_DIR',tmp_path)
+    monkeypatch.setattr(live_sync,'resolve_sheet_id',lambda _: 'testing')
+    monkeypatch.setattr(live_sync,'resolve_credentials',lambda _:object())
+    monkeypatch.setattr(live_sync,'load_manifest',lambda:[('FORECAST PARAMS','FORECAST PARAMS.csv')])
+    monkeypatch.setattr(live_sync.gspread,'authorize',lambda _:SimpleNamespace(open_by_key=lambda _:sheet))
+    assert live_sync.sync_inputs_from_google_sheet()['ok']
+    assert load_forecast_params(tmp_path/'FORECAST PARAMS.csv')[0]['SEED']==42

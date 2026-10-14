@@ -5,17 +5,20 @@ import streamlit as st
 
 
 ROOT = Path(__file__).resolve().parent
-st.set_page_config(page_title="Federal Election Model", layout="wide")
+st.set_page_config(page_title="Federal Election Model — testing", layout="wide")
 
 view = st.segmented_control(
     "Model view",
-    options=["House", "Senate", "Dashboard"],
+    options=["House", "Forecast", "Senate", "Dashboard"],
     default="House",
     key="model_view",
 )
 
+view = view or "House"
+
 scripts = {
     "House": "house_app.py",
+    "Forecast": "forecast_app.py",
     "Senate": "senate_app.py",
     "Dashboard": "dashboard_app.py",
 }

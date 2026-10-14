@@ -1,0 +1,10 @@
+Section,Parameter,Value,Explanation
+Forecast,FORECAST_TITLE,Federal House forecast — testing,Title; presentation only
+Tables,PROBABILITY_DECIMALS,1,"Allowed: 0, 1, 2"
+Tables,SHOW_FORECAST_SEAT_TABLE,true,"Allowed: true, false"
+Colours,COLOUR_ALP,#ff0000,Hex colour; presentation only
+Colours,COLOUR_LNP,#4285f4,Hex colour; presentation only
+Colours,COLOUR_GRN,#34a853,Hex colour; presentation only
+Colours,COLOUR_ON,#ff6d01,Hex colour; presentation only
+Colours,COLOUR_IND,#46bdc6,Hex colour; presentation only
+Colours,COLOUR_OTH,#9900ff,Hex colour; presentation only

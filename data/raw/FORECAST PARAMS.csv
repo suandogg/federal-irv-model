@@ -1,0 +1,17 @@
+Section,Parameter,Value,Units,Explanation
+Run,SIMULATIONS,200,draws,Preview count; increase after assumptions are reviewed. Not a calibrated forecast.
+Run,SEED,20261014,integer,Fixed seed makes repeated runs reproducible with the same inputs.
+Reporting,LOWER_QUANTILE,0.05,fraction,Lower endpoint of the displayed central seat-count interval.
+Reporting,UPPER_QUANTILE,0.95,fraction,Upper endpoint of the displayed central seat-count interval.
+Local votes,REGION_PRIMARY_SD_PP,0.75,primary pp SD,Shared party shock within each of the states and territories; rebalanced to drawn equal-seat national totals.
+Local votes,SEAT_PRIMARY_SD_PP,1.5,primary pp SD,Independent seat/party residual; rebalanced to drawn equal-seat national totals. Includes unmodelled candidate variation.
+Preferences,PREF_EXACT_LOG_SD,0.05,log-weight SD,Observed exact seat/candidate evidence; provisional transport uncertainty.
+Preferences,PREF_POOLED_LOG_SD,0.1,log-weight SD,"Pooled, projected or shrunk federal evidence; provisional."
+Preferences,PREF_GENERIC_LOG_SD,0.2,log-weight SD,"Matrix, ideology, special assumptions and fallback flows; provisional."
+Preferences,PREF_CLASS_ON_LOG_SD,0.1,log-weight SD,ON recipient shock shared within a seat classification.
+National votes,NATIONAL_SD_ALP_PP,2,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.
+National votes,NATIONAL_SD_LNP_PP,2,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.
+National votes,NATIONAL_SD_GRN_PP,1,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.
+National votes,NATIONAL_SD_ON_PP,3,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.
+National votes,NATIONAL_SD_IND_PP,1,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.
+National votes,NATIONAL_SD_OTH_PP,1,primary pp SD,Provisional independent party error before projecting all six shares to a non-negative total of 100; not an empirically fitted polling covariance.

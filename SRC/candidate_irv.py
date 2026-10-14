@@ -261,6 +261,11 @@ def run_candidate_irv_for_seat(
             basis = diagnostic.get("basis", basis)
             diagnostic.update(assess_reliability(diagnostic))
 
+        if basis in {'exact_candidate_transfer', 'projected_candidate_transfer'}:
+            from .forecast_preferences import perturb
+            weights = perturb(weights, eliminated, basis,
+                              str(seat_row.get('classification', '') or ''), params)
+
         transfer = votes[eliminated]
         trace.append(
             {

@@ -27,6 +27,9 @@ PRODUCTION_SYNC_CSV_FILES = frozenset(
         "SEAT_HELPER.csv",
         "SEAT_METADATA.csv",
         "PARAMS.csv",
+        "FORECAST PARAMS.csv",
+        "DISPLAY PARAMS.csv",
+        "CANDIDATE_CLASSIFICATION.csv",
         "SEAT_SHRINKAGE_OVERRIDES.csv",
         "CATEGORY_FLOW_OVERRIDES.csv",
         "CATEGORY_PREF_FLOWS_LONG.csv",
@@ -71,18 +74,9 @@ def _as_dict(value: Any) -> dict[str, Any] | None:
         return None
 
 
-def resolve_sheet_id(secrets: Mapping[str, Any] | None = None) -> str | None:
-    for key in ["FEDERAL_IRV_SHEET_ID", "federal_irv_sheet_id", "google_sheet_id", "sheet_id"]:
-        value = os.environ.get(key) or _secret_get(secrets, key)
-        if value:
-            return str(value).strip()
-
-    if SHEET_ID_FILE.exists():
-        value = SHEET_ID_FILE.read_text().strip()
-        if value:
-            return value
-
-    return None
+def resolve_sheet_id(secrets=None):
+    value = os.environ.get('FEDERAL_TESTING_SHEET_ID') or _secret_get(secrets,'FEDERAL_TESTING_SHEET_ID')
+    return str(value).strip() if value else SHEET_ID_FILE.read_text().strip()
 
 
 def resolve_credentials(secrets: Mapping[str, Any] | None = None) -> Credentials | None:
@@ -217,7 +211,7 @@ def sync_inputs_from_google_sheet(
             errors.append(f"{', '.join(tab for tab, _ in batch)}: {exc}")
 
     return {
-        "ok": len(errors) == 0,
+        "ok": len(errors) == 0 and not skipped,
         "synced": synced,
         "skipped": skipped,
         "errors": errors,

@@ -265,7 +265,7 @@ def _calibrate_supported_only(
     return _normalise_alive(out, alive)
 
 
-def get_preference_weights(
+def _central_preference_weights(
     elim_party: str,
     alive_parties: list[str],
     aec_row: dict[str, float],
@@ -661,3 +661,16 @@ def get_preference_weights(
 
 def _dict_from_vector(vector: list[float]) -> dict[str, float]:
     return {party: vector[i] for i, party in enumerate(PARTIES)}
+
+
+def get_preference_weights(*args, **kwargs):
+    weights, diagnostic = _central_preference_weights(*args, **kwargs)
+    # Existing callers use keyword arguments; retain positional compatibility.
+    if args:
+        import inspect
+        bound = inspect.signature(_central_preference_weights).bind(*args, **kwargs)
+        kwargs = bound.arguments
+    from .forecast_preferences import perturb
+    weights = perturb(weights, kwargs['elim_party'], diagnostic.get('basis',''),
+                      kwargs.get('seat_class',''), kwargs['params'])
+    return weights, diagnostic

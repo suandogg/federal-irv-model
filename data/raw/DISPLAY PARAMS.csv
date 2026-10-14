@@ -1,10 +1,75 @@
-Section,Parameter,Value,Explanation
-Forecast,FORECAST_TITLE,Federal House forecast — testing,Title; presentation only
-Tables,PROBABILITY_DECIMALS,1,"Allowed: 0, 1, 2"
-Tables,SHOW_FORECAST_SEAT_TABLE,true,"Allowed: true, false"
-Colours,COLOUR_ALP,#ff0000,Hex colour; presentation only
-Colours,COLOUR_LNP,#4285f4,Hex colour; presentation only
-Colours,COLOUR_GRN,#34a853,Hex colour; presentation only
-Colours,COLOUR_ON,#ff6d01,Hex colour; presentation only
-Colours,COLOUR_IND,#46bdc6,Hex colour; presentation only
-Colours,COLOUR_OTH,#9900ff,Hex colour; presentation only
+Section,Parameter,Value,Default,Type,Allowed values,Explanation
+Theme,THEME,custom,custom,choice,custom|warm|light|dark,Preset colours; custom uses the colour rows below. Does not change party colours.
+Theme,BACKGROUND,#f2eedf,#f2eedf,colour,#RRGGBB,Main page background
+Theme,SURFACE,#ffffff,#ffffff,colour,#RRGGBB,"Cards, chart and input background"
+Theme,SIDEBAR_BACKGROUND,#e8e3d5,#e8e3d5,colour,#RRGGBB,Sidebar background
+Theme,TEXT,#26251f,#26251f,colour,#RRGGBB,Main text colour
+Theme,MUTED_TEXT,#757166,#757166,colour,#RRGGBB,Captions and secondary text
+Theme,BORDER,#dcd6c8,#dcd6c8,colour,#RRGGBB,Card edges and chart grid
+Theme,ACCENT,#2563eb,#2563eb,colour,#RRGGBB,Buttons and active controls
+Theme,POSITIVE,#138553,#138553,colour,#RRGGBB,Positive display changes
+Theme,NEGATIVE,#cc3344,#cc3344,colour,#RRGGBB,Negative display changes
+Typography,BODY_FONT,sans,sans,choice,sans|serif|mono,System font family; no external downloads
+Typography,HEADING_FONT,serif,serif,choice,sans|serif|mono,Page and section heading font
+Typography,BODY_FONT_PX,16,16,number,12:24,Body text size; Streamlit canvas tables have their own font
+Typography,TITLE_FONT_PX,40,40,number,24:64,Main page title size
+Typography,SECTION_FONT_PX,27,27,number,18:40,Section heading size
+Typography,CAPTION_FONT_PX,14,14,number,11:20,Caption size; warnings remain visible
+Typography,METRIC_FONT_PX,32,32,number,20:52,Dashboard headline value size
+Layout,PAGE_MAX_WIDTH_PX,1450,1450,number,800:2200,Maximum content width; automatically shrinks on smaller screens
+Layout,TOP_PADDING_REM,2,2,number,0:8,Space above main content
+Layout,BOTTOM_PADDING_REM,3,3,number,0:10,Space below main content
+Layout,SECTION_GAP_REM,1.2,1.2,number,0.3:3,Vertical spacing between content blocks
+Layout,CARD_RADIUS_PX,12,12,number,0:32,"Corners of metric cards, charts and buttons"
+Layout,CARD_PADDING_PX,20,20,number,8:40,Padding inside custom charts and metric cards
+Layout,CARD_SHADOW,False,False,boolean,TRUE|FALSE,Subtle shadows on metric and chart cards
+Layout,DASHBOARD_CHAMBERS_SIDE_BY_SIDE,True,True,boolean,TRUE|FALSE,FALSE stacks House and Senate summaries vertically
+Labels,APP_TITLE,Federal election model — testing,Federal election model — testing,text,1–120 characters,Main page title
+Labels,SENATE_TITLE,Federal Senate Model,Federal Senate Model,text,1–120 characters,Senate view heading
+Labels,DASHBOARD_TITLE,Election dashboard,Election dashboard,text,1–120 characters,Dashboard heading
+Labels,FORECAST_TITLE,Federal House forecast — testing,Lower-house forecast · experimental,text,1–120 characters,Forecast heading; provisional warning remains
+Labels,NAV_DASHBOARD,Dashboard,Dashboard,text,1–120 characters,Sidebar navigation label
+Labels,NAV_HOUSE,House,House,text,1–120 characters,Sidebar navigation label
+Labels,NAV_SENATE,Senate,Senate,text,1–120 characters,Sidebar navigation label
+Labels,NAV_FORECAST,Forecast (experimental),Forecast (experimental),text,1–120 characters,Sidebar navigation label
+Labels,SEAT_CHART_TITLE,House seat totals,House seat totals,text,1–120 characters,Forecast interval chart heading
+Labels,GOVERNMENT_CHART_TITLE,Parliamentary outcomes,Parliamentary outcomes,text,1–120 characters,Forecast event chart heading
+Parties,ALP_LABEL,Labor,Labor,text,1–120 characters,Display name only; internal party code stays ALP
+Parties,ALP_COLOUR,#ff0000,#df3347,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,ALP_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,LNP_LABEL,Coalition,Coalition,text,1–120 characters,Display name only; internal party code stays LNP
+Parties,LNP_COLOUR,#4285f4,#2865ce,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,LNP_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,GRN_LABEL,Greens,Greens,text,1–120 characters,Display name only; internal party code stays GRN
+Parties,GRN_COLOUR,#34a853,#22a653,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,GRN_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,ON_LABEL,One Nation,One Nation,text,1–120 characters,Display name only; internal party code stays ON
+Parties,ON_COLOUR,#ff6d01,#ff7900,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,ON_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,IND_LABEL,Independents,Independents,text,1–120 characters,Display name only; internal party code stays IND
+Parties,IND_COLOUR,#46bdc6,#159f9c,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,IND_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,OTH_LABEL,Other,Other,text,1–120 characters,Display name only; internal party code stays OTH
+Parties,OTH_COLOUR,#9900ff,#8d7ba5,colour,#RRGGBB,"Party colour in tables, charts and seat summaries"
+Parties,OTH_TEXT_COLOUR,#ffffff,#ffffff,colour,#RRGGBB,Text colour on filled party cells; choose good contrast
+Parties,PARTY_ORDER,"LNP,ALP,ON,GRN,IND,OTH","LNP,ALP,ON,GRN,IND,OTH",order,"All six codes once, comma separated",Order in custom summary tables and charts; no effect on elimination ties
+Tables,TABLE_ROW_HEIGHT_PX,35,35,number,24:64,Row height for app result tables
+Tables,TABLE_MAX_HEIGHT_PX,560,560,number,180:1600,Maximum height before tables scroll; small tables stay compact
+Tables,TABLE_SHOW_INDEX,False,False,boolean,TRUE|FALSE,Show dataframe index where the table does not explicitly require it
+Tables,PERCENT_DECIMALS,2,2,number,0:3,Displayed percentages; raw/downloaded numbers unchanged
+Tables,PROBABILITY_DECIMALS,1,1,number,0:3,Forecast win/event percentages
+Tables,COLOUR_PARTY_CELLS,True,True,boolean,TRUE|FALSE,Filled party cells in existing styled House tables
+Charts,SEAT_CHART_MODE,intervals,intervals,choice,intervals|histogram|both|table,"Forecast seat-count presentation; intervals show outer range, middle 50% and median"
+Charts,GOVERNMENT_CHART_MODE,both,both,choice,bars|table|both,"Forecast government events are overlapping bars, never a pie"
+Charts,SHOW_FORECAST_SEAT_TABLE,True,True,boolean,TRUE|FALSE,Also show numerical seat distribution summary
+Charts,SHOW_ZERO_SEAT_PARTIES,True,True,boolean,TRUE|FALSE,FALSE hides parties whose upper interval is zero from seat summary charts/tables only
+Charts,CHART_ROW_HEIGHT_PX,56,56,number,36:90,Custom horizontal chart row spacing
+Charts,CHART_LABEL_FONT_PX,16,16,number,11:23,Custom chart label size
+Charts,CHART_HEIGHT_PX,330,330,number,200:800,Histogram height
+Charts,CHART_OUTER_OPACITY,0.22,0.22,number,0.05:0.6,Outer uncertainty band opacity
+Charts,CHART_INNER_OPACITY,0.85,0.85,number,0.3:1,Middle 50% uncertainty band opacity
+Charts,CHART_SHOW_GRID,True,True,boolean,TRUE|FALSE,Vertical guides in custom charts
+Charts,CHART_SHOW_VALUES,True,True,boolean,TRUE|FALSE,Median labels and probability values in custom charts
+Charts,CHART_SHOW_MAJORITY_LINE,True,True,boolean,TRUE|FALSE,Show the roster-derived House majority threshold; presentation cannot change it
+Charts,SEAT_AXIS_MAX,150,150,number,1:150,Requested seat-axis maximum; expands automatically if an interval exceeds it
+Dashboard,SHOW_DASHBOARD_FORMATION_TABLE,True,True,boolean,TRUE|FALSE,Show deterministic parliamentary arithmetic table

@@ -27,8 +27,8 @@ def test_house_refresh_invalidates_forecast_loader_and_results(monkeypatch):
     assert 'forecast_comparison' not in app.session_state
     app.segmented_control[0].set_value('Forecast').run()
     assert not app.exception
-    # Both House and Forecast reload after a refresh in House.
-    assert len(calls)>=first_revision+2
+    # A single shared sync updates both views after a refresh in House.
+    assert len(calls)>=first_revision+1
     assert any(f'Synced revision {len(calls)}' in c.value for c in app.caption)
     st.cache_data.clear()
 

@@ -4,10 +4,17 @@ import pandas as pd
 import streamlit as st
 
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
+from SRC.display_params import defaults as display_defaults
+from SRC.presentation import table
+DISPLAY = st.session_state.get('_display_settings',display_defaults())
+PARTY_LABELS = {p:DISPLAY[p+'_LABEL'] for p in PARTIES}
+PARTY_COLOURS = {p:{'bg':DISPLAY[p+'_COLOUR'],'text':DISPLAY[p+'_TEXT_COLOUR']} for p in PARTIES}
+
 from SRC.senate_scenario import DEFAULT_HOUSE_PRIMARY, PROCESSED, project_chamber
 
 
 def party_style(value):
+    if not DISPLAY["COLOUR_PARTY_CELLS"]: return ""
     for party, label in PARTY_LABELS.items():
         if value in {party, label}:
             colours = PARTY_COLOURS[party]
@@ -26,7 +33,7 @@ def baseline_chamber():
     return {party: int(row[f"{party}_seats"]) for party in PARTIES}
 
 
-st.title("Federal Senate Model")
+st.title(DISPLAY["SENATE_TITLE"])
 st.subheader("Scenario Inputs")
 cols = st.columns(len(PARTIES))
 targets = {}
@@ -62,14 +69,14 @@ if selected_state == "National":
         }
         for party in PARTIES
     ])
-    st.dataframe(summary.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
+    table(summary.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
 
     st.subheader("State Cohort Projections")
     rows = []
     for state in STATE_ORDER:
         projection = state_index[state]
         rows.append({"State": state, **{party: projection["projected_seats"][party] for party in PARTIES}})
-    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+    table(pd.DataFrame(rows), width="stretch", hide_index=True)
 else:
     projection = state_index[selected_state]
     st.subheader(f"{selected_state} Senate Primary Vote")
@@ -77,7 +84,7 @@ else:
         {"Party": PARTY_LABELS[party], "Projected Primary %": projection["primary_targets"][party]}
         for party in PARTIES
     ])
-    st.dataframe(
+    table(
         primary.style.map(party_style, subset=["Party"]),
         width="stretch",
         hide_index=True,
@@ -89,14 +96,14 @@ else:
         {"Party": PARTY_LABELS[party], "Seats": projection["projected_seats"][party]}
         for party in PARTIES
     ])
-    st.dataframe(seats.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
+    table(seats.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
 
     st.subheader("Projected Elected Candidates")
     elected = pd.DataFrame({
         "Order": range(1, len(projection["elected_candidates"]) + 1),
         "Candidate": [candidate.partition(":")[2] for candidate in projection["elected_candidates"]],
     })
-    st.dataframe(elected, width="stretch", hide_index=True)
+    table(elected, width="stretch", hide_index=True)
 
     with st.expander("Count trace"):
-        st.dataframe(pd.DataFrame(projection["trace"]), width="stretch", hide_index=True)
+        table(pd.DataFrame(projection["trace"]), width="stretch", hide_index=True)

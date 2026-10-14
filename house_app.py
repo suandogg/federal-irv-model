@@ -17,6 +17,12 @@ import pandas as pd
 import streamlit as st
 
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS, STATE_ORDER
+from SRC.display_params import defaults as display_defaults
+from SRC.presentation import table
+DISPLAY = st.session_state.get('_display_settings',display_defaults())
+PARTY_LABELS = {p:DISPLAY[p+'_LABEL'] for p in PARTIES}
+PARTY_COLOURS = {p:{'bg':DISPLAY[p+'_COLOUR'],'text':DISPLAY[p+'_TEXT_COLOUR']} for p in PARTIES}
+
 from SRC.candidate_irv import load_candidate_irv_evidence, run_candidate_irv_all
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.live_sheet_sync import sync_inputs_from_google_sheet
@@ -56,6 +62,7 @@ DEFAULT_SCENARIO_PRIMARY = {
 
 
 def party_cell_style(value):
+    if not DISPLAY["COLOUR_PARTY_CELLS"]: return ""
     parts = str(value).split()
     if not parts:
         return ""
@@ -84,6 +91,7 @@ def blackout_cell(value):
 
 
 def placement_cell_style(value):
+    if not DISPLAY["COLOUR_PARTY_CELLS"]: return ""
     party = str(value).strip()
 
     if party not in PARTY_COLOURS:
@@ -119,7 +127,7 @@ def load_static_inputs():
             "message": "Frozen legacy manual-evidence snapshot; live sync disabled",
         }
     else:
-        sync_status = sync_inputs_from_google_sheet(st.secrets)
+        sync_status = st.session_state.get('_current_sync_status') or sync_inputs_from_google_sheet(st.secrets)
     seats = load_seat_metadata()
     matrices = load_preference_matrices()
     params = load_params()
@@ -217,7 +225,7 @@ def add_trace_swings(seat_trace, selected_division_key, baseline_results_by_seat
 
 
 def render_table(df):
-    st.dataframe(
+    table(
         df.style.map(party_cell_style, subset=[c for c in ["Party", "winner", "runner_up"] if c in df.columns]),
         width="stretch",
         hide_index=True,
@@ -230,7 +238,7 @@ def render_result_table(df):
         .map(party_cell_style, subset=[c for c in ["held_by", "winner", "runner_up"] if c in df.columns])
         .map(placement_cell_style, subset=[c for c in ["2nd", "3rd", "4th", "5th", "6th"] if c in df.columns])
     )
-    st.dataframe(
+    table(
         styled,
         width="stretch",
         hide_index=True,
@@ -245,7 +253,7 @@ def render_result_table(df):
 st.title(
     "Federal IRV Election Model — Legacy Backup"
     if LEGACY_MODE
-    else "Federal IRV Election Model"
+    else DISPLAY["APP_TITLE"]
 )
 
 if LEGACY_MODE:
@@ -363,7 +371,7 @@ primary_df = pd.DataFrame(
         for party in PARTIES
     ]
 )
-st.dataframe(
+table(
     primary_df.style.map(party_cell_style, subset=["Party"]),
     width="stretch",
     hide_index=True,
@@ -431,7 +439,7 @@ summary_style = (
     )
 )
 
-st.dataframe(
+table(
     summary_style,
     width="stretch",
     hide_index=True,
@@ -453,7 +461,7 @@ alternate_2cp_df = pd.DataFrame(
     ]
 )
 
-st.dataframe(
+table(
     alternate_2cp_df.style.map(party_cell_style, subset=["Party"]),
     width="stretch",
     hide_index=True,
@@ -473,7 +481,7 @@ three_cp_df = pd.DataFrame(
         for party in three_cp_parties
     ]
 )
-st.dataframe(
+table(
     three_cp_df.style.map(party_cell_style, subset=["Party"]),
     width="stretch",
     hide_index=True,
@@ -627,7 +635,7 @@ trace_columns = [
     *[f"{party}_flow" for party in PARTIES],
 ]
 trace_columns = [col for col in trace_columns if col in seat_trace.columns]
-st.dataframe(
+table(
     seat_trace[trace_columns],
     width="stretch",
     hide_index=True,

@@ -3,6 +3,12 @@ import streamlit as st
 
 from SRC.candidate_irv import load_candidate_irv_evidence, run_candidate_irv_all
 from SRC.constants import PARTIES, PARTY_COLOURS, PARTY_LABELS
+from SRC.display_params import defaults as display_defaults
+from SRC.presentation import table
+DISPLAY = st.session_state.get('_display_settings',display_defaults())
+PARTY_LABELS = {p:DISPLAY[p+'_LABEL'] for p in PARTIES}
+PARTY_COLOURS = {p:{'bg':DISPLAY[p+'_COLOUR'],'text':DISPLAY[p+'_TEXT_COLOUR']} for p in PARTIES}
+
 from SRC.irv import apply_statewide_primary_adjustment, run_irv_all
 from SRC.loaders import (
     load_baseline_primary_by_state,
@@ -16,6 +22,7 @@ from SRC.senate_scenario import DEFAULT_HOUSE_PRIMARY, project_chamber
 
 
 def party_style(value):
+    if not DISPLAY["COLOUR_PARTY_CELLS"]: return ""
     for party, label in PARTY_LABELS.items():
         if value in {party, label}:
             colours = PARTY_COLOURS[party]
@@ -44,7 +51,7 @@ def run_dashboard(target_items):
     return house["winner"].value_counts().to_dict(), project_chamber(targets)
 
 
-st.title("Federal Election Dashboard")
+st.title(DISPLAY["DASHBOARD_TITLE"])
 st.subheader("Scenario Inputs")
 cols = st.columns(len(PARTIES))
 targets = {}
@@ -57,27 +64,28 @@ for col, party in zip(cols, PARTIES):
         )
 
 house_seats, senate = run_dashboard(tuple(sorted(targets.items())))
-left, right = st.columns(2)
+left, right = st.columns(2) if DISPLAY['DASHBOARD_CHAMBERS_SIDE_BY_SIDE'] else (st.container(),st.container())
 with left:
     st.subheader("House")
     house_df = pd.DataFrame([
         {"Party": PARTY_LABELS[party], "Seats": house_seats.get(party, 0)} for party in PARTIES
     ])
-    st.dataframe(house_df.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
+    table(house_df.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
 with right:
     st.subheader("Senate")
     senate_df = pd.DataFrame([
         {"Party": PARTY_LABELS[party], "Seats": senate["chamber_seats"][party]} for party in PARTIES
     ])
-    st.dataframe(senate_df.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
+    table(senate_df.style.map(party_style, subset=["Party"]), width="stretch", hide_index=True)
 
 alp_house = house_seats.get("ALP", 0)
 lnp_house = house_seats.get("LNP", 0)
-st.subheader("Government Position")
-if alp_house >= 76:
-    st.success(f"Labor majority government: {alp_house} House seats")
-elif lnp_house >= 76:
-    st.success(f"Coalition majority government: {lnp_house} House seats")
-else:
-    leader = "Labor" if alp_house >= lnp_house else "Coalition"
-    st.warning(f"Hung House. {leader} is the largest bloc; 76 seats are required for a majority.")
+if DISPLAY['SHOW_DASHBOARD_FORMATION_TABLE']:
+    st.subheader("Government Position")
+    if alp_house >= 76:
+        st.success(f"Labor majority government: {alp_house} House seats")
+    elif lnp_house >= 76:
+        st.success(f"Coalition majority government: {lnp_house} House seats")
+    else:
+        leader = "Labor" if alp_house >= lnp_house else "Coalition"
+        st.warning(f"Hung House. {leader} is the largest bloc; 76 seats are required for a majority.")

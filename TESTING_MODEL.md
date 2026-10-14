@@ -39,3 +39,13 @@ Live native Sheet values and formatting were read back after creation. The Forec
 ## Hosted testing deployment
 
 The hosted branch retains the model input data already committed in the existing federal repository. Only app code and non-sensitive forecast/display defaults are newly published. The local connected-workbook snapshot and example-run outputs are not published to GitHub. Live refresh uses the isolated testing workbook once service-account credentials are configured.
+
+## Expanded display controls — 14 October 2026
+
+DISPLAY PARAMS now contains 74 presentation controls in the same seven-column schema as the state model: Section, Parameter, Value, Default, Type, Allowed values, Explanation. Edit Value in column C; choose Refresh Google Sheet inputs. Existing title, precision, visibility and party colours were preserved during migration. Old COLOUR_ALP-style aliases remain readable; canonical colours now use ALP_COLOUR-style names.
+
+Theme presets/custom palette, fonts and sizes, page width and spacing, card styling, view/navigation labels, party names/order/colours/text colours, table height/index/precision, interval/histogram/table modes, outcome bars/tables, chart labels/size/opacity/grid/value/majority toggles, zero-seat-party visibility and Dashboard chamber layout/formation visibility are supported. Controls without a federal counterpart were omitted. The majority line derives from the House roster; SEAT_AXIS_MAX is presentation only. Invalid values warn and use defaults. Display labels and order do not modify internal party codes or counts.
+
+All views share one cached input refresh before reading presentation settings, so a single refresh applies newly downloaded colours, labels and navigation without needing another view switch. The hosted testing app now has an authorised existing Google service-account connection; successful refresh of all 27 runtime tabs was verified. No private keys are stored in the repository.
+
+Validation: 94 tests passed; House, Forecast, Senate and Dashboard smoke tests passed. Histogram, interval and event-chart rendering, validation fallback and display/input immutability are covered.

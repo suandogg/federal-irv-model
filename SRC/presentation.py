@@ -21,6 +21,8 @@ def effective(settings):
 
 def apply_theme(settings):
     s = effective(settings)
+    rgb = [int(s['ACCENT'][i:i+2],16) for i in (1,3,5)]
+    accent_text = '#000000' if sum(c*w for c,w in zip(rgb,[.299,.587,.114]))>150 else '#ffffff'
     css = f'''
     :root {{color-scheme: {'dark' if s['THEME']=='dark' else 'light'};}}
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{background:{s['BACKGROUND']};color:{s['TEXT']};}}
@@ -37,7 +39,15 @@ def apply_theme(settings):
     [data-testid="stMetricDelta"][data-color="normal"] {{color:{s['POSITIVE']};}}
     [data-testid="stMetricDelta"][data-color="inverse"] {{color:{s['NEGATIVE']};}}
     .stButton button, .stDownloadButton button, .stLinkButton a {{border-radius:{s['CARD_RADIUS_PX']}px;background:{s['SURFACE']};color:{s['TEXT']};border-color:{s['BORDER']};}}
-    .stButton button[kind="primary"] {{background:{s['ACCENT']};color:white;}}
+    .stButton button[kind="primary"], [data-testid="stButtonGroup"] button[kind="segmented_controlActive"] {{background:{s['ACCENT']};color:{accent_text};}}
+    .stButton button[kind="primary"] [data-testid="stMarkdownContainer"], .stButton button[kind="primary"] p, [data-testid="stButtonGroup"] button[kind="segmented_controlActive"] [data-testid="stMarkdownContainer"], [data-testid="stButtonGroup"] button[kind="segmented_controlActive"] p {{color:{accent_text} !important;}}
+    [data-testid="stButtonGroup"] button[kind="segmented_control"] {{background:{s['SURFACE']};color:{s['TEXT']};border-color:{s['BORDER']};}}
+    [data-testid="stButtonGroup"] button[kind="segmented_control"] [data-testid="stMarkdownContainer"], [data-testid="stButtonGroup"] button[kind="segmented_control"] p {{color:{s['TEXT']} !important;}}
+    [data-baseweb="tab"] {{color:{s['TEXT']};background:{s['SURFACE']};}}
+    [data-baseweb="tab"][aria-selected="true"] {{border-color:{s['ACCENT']};}}
+    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p {{color:{s['MUTED_TEXT']} !important;opacity:1;}}
+    [data-testid="stHeader"] button, [data-testid="stHeader"] svg {{color:{s['TEXT']};}}
+
     [data-baseweb="input"], [data-baseweb="select"] > div {{background:{s['SURFACE']};color:{s['TEXT']};}}
     [data-testid="stNumberInputContainer"], [data-testid="stNumberInputContainer"] [data-baseweb="base-input"], [data-testid="stNumberInputField"], [data-testid="stNumberInputStepDown"], [data-testid="stNumberInputStepUp"] {{background:{s['SURFACE']} !important;color:{s['TEXT']} !important;}}
     [data-testid="stNumberInputContainer"] {{border:1px solid {s['BORDER']};}}

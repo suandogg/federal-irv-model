@@ -56,3 +56,24 @@ def test_complete_schema_loads_without_warnings():
     assert not warnings
     assert settings['COLOUR_PARTY_CELLS'] is True
     assert len(settings)==74
+
+
+def test_sorted_party_labels_keep_their_colours_and_swing_styles(monkeypatch):
+    import SRC.presentation as presentation
+    from SRC.constants import PARTIES
+    settings=defaults()
+    settings['PARTY_ORDER']='LNP,ALP,ON,GRN,IND,OTH'
+    frame=pd.DataFrame({'Party':[settings[p+'_LABEL'] for p in PARTIES],
+                        'Swing %':[.3,-.3,-.1,-.2,-.4,.6]})
+    original=frame.copy(deep=True)
+    styled=frame.style.map(lambda v:'font-weight: bold',subset=['Party']).format({'Swing %':'{:.2f}'})
+    monkeypatch.setattr(presentation.st,'dataframe',lambda data,*args,**kwargs:data)
+    result=presentation.table(styled,settings=settings)
+    result._compute()
+    for row,party in enumerate(settings['PARTY_ORDER'].split(',')):
+        assert result.data.iloc[row]['Party']==settings[party+'_LABEL']
+        assert ('background-color',settings[party+'_COLOUR']) in result.ctx[(row,0)]
+        value=result.data.iloc[row]['Swing %']
+        assert ('color',settings['POSITIVE'] if value>0 else settings['NEGATIVE']) in result.ctx[(row,1)]
+    pd.testing.assert_frame_equal(frame,original)
+    assert styled.index.equals(original.index)

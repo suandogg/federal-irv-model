@@ -67,6 +67,13 @@ def table(data,*args,settings=None,probabilities=False,**kwargs):
         else:
             data=data._copy(deepcopy=True)
             data.data=frame
+            # Styler caches its own index separately from the dataframe. Keep
+            # them aligned or CSS row numbers still refer to the old order.
+            data.index=frame.index
+            data.columns=frame.columns
+            data.ctx.clear()
+            data.ctx_index.clear()
+            data.ctx_columns.clear()
     if frame is not None:
         swing_columns=[c for c in frame if ('Swing' in str(c) or 'Change' in str(c)) and pd.api.types.is_numeric_dtype(frame[c])]
         if swing_columns:

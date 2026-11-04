@@ -1,11 +1,12 @@
 """Simulation-only perturbations; central preference selection remains unchanged."""
 import math
 
-def perturb(weights, origin, basis, seat_class, params):
+def perturb(weights, origin, basis, seat_class, params, seat_evidence_weight=None):
     shocks = params.get('_forecast_shocks')
     if not shocks:
         return weights
-    if basis in {'seat_pref_flow', 'aec_perfect', 'exact_candidate_transfer'}:
+    full_weight_seat = basis == 'seat_pref_flow_shrunk' and seat_evidence_weight == 1
+    if full_weight_seat or basis in {'seat_pref_flow', 'aec_perfect', 'exact_candidate_transfer'}:
         source = 'EXACT'
     elif 'shrunk' in basis or 'posterior' in basis or basis == 'projected_candidate_transfer':
         source = 'POOLED'

@@ -53,15 +53,19 @@ def render_forecast():
     try: settings,source=load_forecast_params()
     except ValueError as exc: st.error(str(exc)); return
     st.caption(source)
+    concentration_trial = st.checkbox(
+        'Trial geographic concentration',
+        help='Use the state shock width for shifts toward or away from party strongholds instead. Seat shocks are still applied.'
+    )
     with st.expander('Settings, methodology and input status'):
         render_table(parameter_table(settings),hide_index=True)
         st.write('Edit column C in FORECAST PARAMS. PARAMS remains the central deterministic model. DISPLAY PARAMS changes presentation only. Refresh inputs after Sheet edits.')
-        st.write('National errors are projected to 100%; state/territory and seat errors preserve the production builder’s equal-seat totals and structural zeros. Full production counting includes candidate-level independents. Preference noise follows central source selection. Central model parameters and candidate roster stay fixed.')
+        st.write('National errors are projected to 100%; local shocks preserve the production builder’s equal-seat totals and structural zeros. Full production counting includes candidate-level independents. Preference noise follows central source selection. Central model parameters and candidate roster stay fixed.')
         st.write('Preference scales: exact-seat/candidate and perfect AEC evidence; pooled/projected/shrunk evidence; other matrix/ideology/assumed flows. Widths are not calibrated from sample sizes.')
         st.write('Government events overlap and are seat arithmetic. ALP support routes are OR-counted once; independents are not assumed to agree to support. Tied LNP–ON leadership is reported separately.')
         st.json(status); st.json(params)
     inputs=(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,settings,calibration,status)
-    signature=fingerprint(*inputs)
+    signature=fingerprint(*inputs, concentration_trial)
     if st.session_state.get('forecast_signature')!=signature:
         st.session_state.pop('forecast_result',None); st.session_state.pop('forecast_comparison',None)
     if st.button('Run House forecast',type='primary'):
@@ -69,7 +73,8 @@ def render_forecast():
         st.session_state.pop('forecast_comparison',None)
         bar=st.progress(0.)
         try:
-            result=run_forecast(*inputs[:9],calibration,bar.progress,status)
+            result=run_forecast(*inputs[:9],calibration,bar.progress,status,
+                                concentration_trial=concentration_trial)
             st.session_state.forecast_result=result; st.session_state.forecast_signature=signature
         except Exception as exc: st.error(f'Forecast failed; no partial results published: {exc}')
         bar.empty()
@@ -99,7 +104,8 @@ def render_forecast():
                 comparison=[]
                 for label,profile in zip(['Narrower','Wider'],profiles):
                     bar=st.progress(0.,text=label)
-                    alternative=run_forecast(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,profile,calibration,bar.progress,status)
+                    alternative=run_forecast(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,profile,calibration,bar.progress,status,
+                                             concentration_trial=concentration_trial)
                     comparison.append(alternative['summary'].assign(Profile=label)); bar.empty()
                 comparison.append(result['summary'].assign(Profile='Current'))
                 st.session_state.forecast_comparison=pd.concat(comparison,ignore_index=True)
@@ -108,6 +114,15 @@ def render_forecast():
     with seat_tab:
         table=result['seats']; selected=st.selectbox('Seat',table.division.tolist())
         render_table(table[table.division==selected],hide_index=True)
+        if 'finalist_pairs' in result:
+            selected_key = table.loc[table.division.eq(selected), 'division_key'].iloc[0]
+            pairs = result['finalist_pairs']
+            st.markdown('**Final pairs and wins given the pair**')
+            st.caption('Pair frequency is the share of all draws. Conditional wins use only draws with that pair. Parties with zero wins are omitted.')
+            render_table(pairs[pairs.division_key.eq(selected_key)].drop(columns='division_key'),
+                         hide_index=True)
+            st.download_button('Download finalist pair results', pairs.to_csv(index=False),
+                               'forecast_finalist_pairs.csv', 'text/csv')
         if display['SHOW_FORECAST_SEAT_TABLE']:
             decimals=int(display['PROBABILITY_DECIMALS'])
             render_table(table,probabilities=True)

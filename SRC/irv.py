@@ -319,18 +319,18 @@ def apply_statewide_primary_adjustment(
                     ):
                         seat_baseline = float(baseline_by_seat.at[div_key, baseline_col]) / 100.0
                     if party == "IND":
+                        status = str(row.get("ind_candidate_status", "") or "").strip().upper()
+                        if not status:
+                            if str(row.get("held_by", "") or "").strip().upper() == "IND":
+                                status = "INCUMBENT"
+                            elif seat_baseline is not None and seat_baseline >= 0.10:
+                                status = "ESTABLISHED"
+                            elif seat_baseline is not None and seat_baseline <= 0:
+                                status = "NONE"
                         configured = row.get("ind_swing_responsiveness")
                         if pd.notna(configured):
                             strength = float(configured)
                         else:
-                            status = str(row.get("ind_candidate_status", "") or "").strip().upper()
-                            if not status:
-                                if str(row.get("held_by", "") or "").strip().upper() == "IND":
-                                    status = "INCUMBENT"
-                                elif seat_baseline is not None and seat_baseline >= 0.10:
-                                    status = "ESTABLISHED"
-                                elif seat_baseline is not None and seat_baseline <= 0:
-                                    status = "NONE"
                             strength = {
                                 "INCUMBENT": 0.5,
                                 "ESTABLISHED": 0.8,

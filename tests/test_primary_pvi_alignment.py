@@ -120,3 +120,26 @@ def test_grn_and_ind_preserve_seat_baselines_and_apply_only_national_swing():
     assert swung["GRN"] == pytest.approx(0.30 + 0.8 * 0.02)
     assert swung["IND"] == pytest.approx(0.40 + 0.5 * 0.02)
     assert sum(swung[party] for party in PARTIES) == pytest.approx(1.0)
+
+
+def test_ind_responsiveness_override_uses_its_own_division_status():
+    seats = pd.DataFrame([
+        dict(division_key='ABSENT', ind_candidate_status='NONE',
+             ind_swing_responsiveness=0.8, **dict.fromkeys(PARTIES, 1 / 6)),
+        dict(division_key='ACTIVE', ind_candidate_status='NEW',
+             ind_swing_responsiveness=0.5, **dict.fromkeys(PARTIES, 1 / 6)),
+    ])
+    pvi = pd.DataFrame([
+        dict(division_key=key, **dict.fromkeys(PARTIES, 0.0))
+        for key in seats.division_key
+    ])
+    baseline = pd.DataFrame({'division_key': seats.division_key, 'IND_primary': [0, 8]})
+    targets = dict(zip(PARTIES, [35, 30, 10, 10, 10, 5]))
+
+    for ordered_seats in (seats, seats.iloc[::-1]):
+        projected = apply_statewide_primary_adjustment(
+            ordered_seats, targets, pvi, baseline_results_by_seat=baseline,
+            baseline_primary_by_state={'National': {'IND': 6}},
+        ).set_index('division_key')
+        assert projected.at['ABSENT', 'IND'] == 0
+        assert projected.at['ACTIVE', 'IND'] == pytest.approx(0.08)

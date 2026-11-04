@@ -69,7 +69,7 @@ def draw_targets(targets, settings, rng):
     return dict(zip(PARTIES,draw))
 
 
-def perturb_local_primaries(adjusted, settings, rng):
+def perturb_local_primaries(adjusted, settings, rng, *, concentration_rng=None):
     if not settings['REGION_PRIMARY_SD_PP'] and not settings['SEAT_PRIMARY_SD_PP']:
         return adjusted.copy()
     base = adjusted[PARTIES].to_numpy(dtype=float)
@@ -80,7 +80,20 @@ def perturb_local_primaries(adjusted, settings, rng):
     region_names = sorted(adjusted.state.unique())
     regional = {region:rng.normal(0,settings['REGION_PRIMARY_SD_PP'],len(PARTIES))/100
                 for region in region_names}
-    shock = np.array([regional[region] for region in adjusted.state])
+    if concentration_rng is None:
+        shock = np.array([regional[region] for region in adjusted.state])
+    else:
+        # Replace state shocks with a national concentration shock per party.
+        # Standardise each party's geography over its positive-support seats.
+        # Keep the main RNG's draw sequence identical across trial modes.
+        support = base > 0
+        supported_seats = support.sum(axis=0).clip(min=1)
+        mean = base.sum(axis=0) / supported_seats
+        centred = np.where(support, base - mean, 0)
+        spread = np.sqrt((centred ** 2).sum(axis=0) / supported_seats)
+        pattern = np.divide(centred, spread, out=np.zeros_like(base), where=spread > 1e-12)
+        concentration = concentration_rng.normal(0, settings['REGION_PRIMARY_SD_PP'] / 100, len(PARTIES))
+        shock = pattern * concentration
     shock += rng.normal(0,settings['SEAT_PRIMARY_SD_PP']/100,base.shape)
     perturbed = np.where(base>0, np.maximum(base+shock,1e-12),0)
     # Raking preserves the current draw's column totals and every seat total.
@@ -100,7 +113,8 @@ def perturb_local_primaries(adjusted, settings, rng):
 
 
 def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primary,
-                 evidence, targets, settings, calibration=True, progress=None, sync_status=None):
+                 evidence, targets, settings, calibration=True, progress=None, sync_status=None,
+                 *, concentration_trial=False):
     settings = validate(settings)
     keys = seats.division_key.astype(str).tolist()
     if not keys or len(set(keys)) != len(keys) or seats.state.isna().any():
@@ -108,7 +122,12 @@ def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primar
     if set(keys)-set(matrices):
         raise ValueError('Missing preference matrices for House roster')
     rng = np.random.default_rng(settings['SEED'])
+    concentration_rng = (
+        np.random.default_rng(np.random.SeedSequence([settings['SEED'], 1]))
+        if concentration_trial else None
+    )
     winners, margins, two_pp, counts, primaries = [], [], [], [], []
+    runners_up = []
     for draw in range(settings['SIMULATIONS']):
         national = draw_targets(targets,settings,rng)
         draw_params = copy.deepcopy(params)
@@ -119,7 +138,7 @@ def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primar
         } if any(settings[k] for k in settings if k.startswith('PREF_')) else None
         adjusted = apply_statewide_primary_adjustment(seats,national,pvi,params=draw_params,
                     baseline_results_by_seat=baseline_results,baseline_primary_by_state=baseline_primary)
-        adjusted = perturb_local_primaries(adjusted,settings,rng)
+        adjusted = perturb_local_primaries(adjusted, settings, rng, concentration_rng=concentration_rng)
         values = adjusted[PARTIES].to_numpy()
         if not np.isfinite(values).all() or (values<0).any() or not np.allclose(values.sum(axis=1),1):
             raise ValueError('Invalid simulated primaries')
@@ -127,6 +146,7 @@ def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primar
         if result.division_key.tolist()!=keys or not result.winner.isin(PARTIES).all():
             raise ValueError('Incomplete House draw; no partial results published')
         winners.append(result.winner.tolist())
+        runners_up.append(result.runner_up.tolist())
         margins.append((result.winner_pct.to_numpy()-.5)*100)
         two_pp.append(result.ALP_2PP.to_numpy()*100)
         counts.append([int((result.winner==p).sum()) for p in PARTIES])
@@ -139,6 +159,24 @@ def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primar
         prob=(winners==p).mean(axis=0)
         probabilities[p+' win %']=prob*100
         probabilities[p+' MCSE pp']=100*np.sqrt(prob*(1-prob)/len(winners))
+    finalist_records = []
+    for key, seat_winners, seat_runners in zip(keys, winners.T, np.asarray(runners_up).T):
+        pairs = pd.DataFrame({'winner': seat_winners, 'runner_up': seat_runners})
+        pairs['final_pair'] = [
+            '+'.join(sorted(filter(None, (winner, runner))))
+            for winner, runner in zip(seat_winners, seat_runners)
+        ]
+        for pair, draws in pairs.groupby('final_pair', sort=True):
+            for party, appearances in draws.winner.value_counts().items():
+                finalist_records.append({
+                    'division_key': key,
+                    'final_pair': pair,
+                    'winner': party,
+                    'pair_draws': len(draws),
+                    'pair_probability_pct': 100 * len(draws) / len(seat_winners),
+                    'wins': appearances,
+                    'win_given_pair_pct': 100 * appearances / len(draws),
+                })
     probabilities['Median winning margin pp']=np.median(margins,axis=0)
     probabilities['Median ALP 2PP %']=np.median(two_pp,axis=0)
     summary=pd.DataFrame({'Party':PARTIES,'Average':counts.mean().values,
@@ -151,12 +189,14 @@ def run_forecast(seats, matrices, params, pvi, baseline_results, baseline_primar
                          'MCSE pp':float(100*np.sqrt(event.mean()*(1-event.mean())/len(counts)))}
                         for label,event in government_events(counts,len(keys)).items()])
     return dict(summary=summary,events=events,seats=probabilities,counts=counts,
+        finalist_pairs=pd.DataFrame(finalist_records),
         primaries=pd.DataFrame(primaries,columns=PARTIES),winners=pd.DataFrame(winners,columns=keys),
         manifest={'timestamp_utc':datetime.now(timezone.utc).isoformat(),'source_hash':engine_source_hash(),
-                  'fingerprint':fingerprint(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,settings,calibration),
+                  'fingerprint':fingerprint(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,settings,calibration,concentration_trial),
                   'targets':targets,'settings':settings,'model_params':params,'house_size':len(keys),
                   'majority':len(keys)//2+1,'calibration':calibration,'sync_status':sync_status,
-                  'method':'Federal production primary builder and full candidate-aware IRV; equal-seat aggregation; state/territory primary shocks',
+                  'geography_mode': 'concentration trial' if concentration_trial else 'state shocks',
+                  'method':'Federal production primary builder and full candidate-aware IRV; equal-seat aggregation',
                   'caveats':['Conditional on entered primaries; no polling model','Uncertainty widths provisional; central model parameters fixed',
                              'Structural zeros preserved relative to each production primary draw',
                              'Events overlap; independent support not predicted; LNP groups Liberals and Nationals',

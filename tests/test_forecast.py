@@ -34,8 +34,17 @@ class ForecastTests(unittest.TestCase):
         settings=defaults();settings['SIMULATIONS']=8
         original=fingerprint(self.seats,self.params,self.matrices,self.evidence)
         a=self.run_model(settings);b=self.run_model(settings)
-        for key in ['winners','counts','seats','primaries']: pd.testing.assert_frame_equal(a[key],b[key])
+        for key in ['winners','counts','seats','primaries','finalist_pairs']: pd.testing.assert_frame_equal(a[key],b[key])
         self.assertEqual(original,fingerprint(self.seats,self.params,self.matrices,self.evidence))
+        pairs = a['finalist_pairs']
+        self.assertTrue((pairs.groupby('division_key').wins.sum() == settings['SIMULATIONS']).all())
+        np.testing.assert_allclose(
+            pairs.drop_duplicates(['division_key', 'final_pair'])
+                .groupby('division_key').pair_probability_pct.sum(), 100
+        )
+        np.testing.assert_allclose(
+            pairs.groupby(['division_key', 'final_pair']).win_given_pair_pct.sum(), 100
+        )
         self.assertTrue((a['counts'].sum(axis=1)==len(self.seats)).all())
         self.assertAlmostEqual(a['summary'].Average.sum(),len(self.seats))
         np.testing.assert_allclose(a['seats'][[p+' win %' for p in PARTIES]].sum(axis=1),100)
@@ -46,6 +55,22 @@ class ForecastTests(unittest.TestCase):
         np.testing.assert_allclose(adjusted[PARTIES].sum(),varied[PARTIES].sum(),atol=1e-9)
         np.testing.assert_allclose(adjusted[PARTIES].sum(axis=1),varied[PARTIES].sum(axis=1),atol=1e-12)
         self.assertTrue((varied[PARTIES].to_numpy()[adjusted[PARTIES].to_numpy()==0]==0).all())
+    def test_concentration_preserves_totals_support_and_main_random_sequence(self):
+        adjusted = apply_statewide_primary_adjustment(
+            self.seats, self.targets, self.pvi, self.params, self.baseline, self.national
+        )
+        control_rng = np.random.default_rng(2)
+        trial_rng = np.random.default_rng(2)
+        control = perturb_local_primaries(adjusted, defaults(), control_rng)
+        trial = perturb_local_primaries(
+            adjusted, defaults(), trial_rng, concentration_rng=np.random.default_rng(3)
+        )
+        self.assertFalse(np.allclose(control[PARTIES], trial[PARTIES]))
+        np.testing.assert_allclose(adjusted[PARTIES].sum(), trial[PARTIES].sum(), atol=1e-9)
+        np.testing.assert_allclose(adjusted[PARTIES].sum(axis=1), trial[PARTIES].sum(axis=1), atol=1e-12)
+        self.assertTrue((trial[PARTIES].to_numpy()[adjusted[PARTIES].to_numpy() == 0] == 0).all())
+        self.assertEqual(control_rng.random(), trial_rng.random())
+
     def test_events_boundaries(self):
         counts=pd.DataFrame([[75,75,0,0,0,0],[74,40,1,35,0,0],[74,38,1,37,0,0],[70,38,4,38,0,0],[70,35,6,35,4,0]],columns=PARTIES)
         events=government_events(counts,150)
@@ -67,5 +92,7 @@ class ForecastTests(unittest.TestCase):
         b=perturb(weights,'IND','projected_candidate_transfer','Rural',params)
         self.assertEqual(a['ON'],0);self.assertAlmostEqual(sum(a.values()),1);self.assertNotEqual(a,b)
         self.assertEqual(perturb(weights,'IND','aec','Rural',{}),weights)
+        self.assertEqual(perturb(weights, 'IND', 'seat_pref_flow_shrunk', 'Rural', params, 1), a)
+        self.assertEqual(perturb(weights, 'IND', 'seat_pref_flow_shrunk', 'Rural', params, 0.8), b)
 
 if __name__=='__main__':unittest.main()

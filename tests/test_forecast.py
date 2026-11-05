@@ -71,6 +71,19 @@ class ForecastTests(unittest.TestCase):
         self.assertTrue((trial[PARTIES].to_numpy()[adjusted[PARTIES].to_numpy() == 0] == 0).all())
         self.assertEqual(control_rng.random(), trial_rng.random())
 
+    def test_structured_spread_and_matched_national_draws(self):
+        settings = {**defaults(), 'SIMULATIONS': 4}
+        args = (self.seats, self.matrices, self.params, self.pvi, self.baseline,
+                self.national, self.evidence, self.targets, settings)
+        current = run_forecast(*args)
+        trial = run_forecast(*args, structured_width=.30, sparse_pool_width=.25)
+        pd.testing.assert_frame_equal(current['primaries'], trial['primaries'])
+        spread = trial['seats']['ALP–LNP 2PP SD (pp)']
+        self.assertTrue(np.isfinite(spread).all())
+        self.assertGreater(spread.mean(), 0)
+        self.assertAlmostEqual(spread.mean(), trial['manifest']['mean_division_2pp_sd_pp'])
+        self.assertFalse(np.allclose(current['seats']['ALP–LNP 2PP SD (pp)'], spread))
+
     def test_events_boundaries(self):
         counts=pd.DataFrame([[75,75,0,0,0,0],[74,40,1,35,0,0],[74,38,1,37,0,0],[70,38,4,38,0,0],[70,35,6,35,4,0]],columns=PARTIES)
         events=government_events(counts,150)
@@ -94,5 +107,13 @@ class ForecastTests(unittest.TestCase):
         self.assertEqual(perturb(weights,'IND','aec','Rural',{}),weights)
         self.assertEqual(perturb(weights, 'IND', 'seat_pref_flow_shrunk', 'Rural', params, 1), a)
         self.assertEqual(perturb(weights, 'IND', 'seat_pref_flow_shrunk', 'Rural', params, 0.8), b)
+        shocks['sparse_pool_width'] = .25
+        self.assertEqual(perturb(weights, 'IND', 'posterior_shrunk', 'Rural', params,
+                                 pooled_evidence_seats=4), b)
+        self.assertNotEqual(perturb(weights, 'IND', 'posterior_shrunk', 'Rural', params,
+                                    pooled_evidence_seats=3), b)
+        self.assertEqual(perturb(weights, 'IND', 'seat_pref_flow_shrunk', 'Rural', params,
+                                 seat_evidence_weight=1, pooled_evidence_seats=1), a)
+
 
 if __name__=='__main__':unittest.main()

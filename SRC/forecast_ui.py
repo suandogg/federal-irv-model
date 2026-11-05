@@ -53,10 +53,17 @@ def render_forecast():
     try: settings,source=load_forecast_params()
     except ValueError as exc: st.error(str(exc)); return
     st.caption(source)
-    concentration_trial = st.checkbox(
-        'Trial geographic concentration',
-        help='Use the state shock width for shifts toward or away from party strongholds instead. Seat shocks are still applied.'
+    geography = st.selectbox(
+        'Geographic uncertainty',
+        ['Current state and seat shocks', 'Additive concentration trial',
+         'Bounded concentration + structured geography (development)'],
     )
+    options = {'concentration_trial': geography == 'Additive concentration trial'}
+    if geography.startswith('Bounded'):
+        options['structured_width'] = st.number_input('Common concentration input width', 0., 1., .30, .05)
+        st.caption('Provisional state and within-state seat-class blend. The power is bounded between 0 and 2.')
+    if st.checkbox('Trial wider preference uncertainty for pools with 1–3 donors'):
+        options['sparse_pool_width'] = st.number_input('Sparse-pool log-weight SD', 0., 1., .25, .025)
     with st.expander('Settings, methodology and input status'):
         render_table(parameter_table(settings),hide_index=True)
         st.write('Edit column C in FORECAST PARAMS. PARAMS remains the central deterministic model. DISPLAY PARAMS changes presentation only. Refresh inputs after Sheet edits.')
@@ -65,7 +72,7 @@ def render_forecast():
         st.write('Government events overlap and are seat arithmetic. ALP support routes are OR-counted once; independents are not assumed to agree to support. Tied LNP–ON leadership is reported separately.')
         st.json(status); st.json(params)
     inputs=(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,settings,calibration,status)
-    signature=fingerprint(*inputs, concentration_trial)
+    signature=fingerprint(*inputs, options)
     if st.session_state.get('forecast_signature')!=signature:
         st.session_state.pop('forecast_result',None); st.session_state.pop('forecast_comparison',None)
     if st.button('Run House forecast',type='primary'):
@@ -74,7 +81,7 @@ def render_forecast():
         bar=st.progress(0.)
         try:
             result=run_forecast(*inputs[:9],calibration,bar.progress,status,
-                                concentration_trial=concentration_trial)
+                                **options)
             st.session_state.forecast_result=result; st.session_state.forecast_signature=signature
         except Exception as exc: st.error(f'Forecast failed; no partial results published: {exc}')
         bar.empty()
@@ -82,6 +89,8 @@ def render_forecast():
     if result is None: st.info('Choose central primaries, then run the forecast.'); return
     parliament,seat_tab,details=st.tabs(['Parliament','Seat probabilities','Run details'])
     with parliament:
+        st.metric('Mean division ALP–LNP 2PP SD', f"{result['manifest']['mean_division_2pp_sd_pp']:.2f} pp")
+        st.caption('Average across divisions of the simulated forced ALP–LNP 2PP standard deviation.')
         summary=result['summary']
         if not display['SHOW_ZERO_SEAT_PARTIES']: summary=summary[summary.Upper>0]
         if display['SHOW_FORECAST_SEAT_TABLE'] or display['SEAT_CHART_MODE']=='table':
@@ -105,7 +114,7 @@ def render_forecast():
                 for label,profile in zip(['Narrower','Wider'],profiles):
                     bar=st.progress(0.,text=label)
                     alternative=run_forecast(seats,matrices,params,pvi,baseline_results,baseline_primary,evidence,targets,profile,calibration,bar.progress,status,
-                                             concentration_trial=concentration_trial)
+                                             **options)
                     comparison.append(alternative['summary'].assign(Profile=label)); bar.empty()
                 comparison.append(result['summary'].assign(Profile='Current'))
                 st.session_state.forecast_comparison=pd.concat(comparison,ignore_index=True)

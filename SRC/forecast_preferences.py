@@ -1,7 +1,7 @@
 """Simulation-only perturbations; central preference selection remains unchanged."""
 import math
 
-def perturb(weights, origin, basis, seat_class, params, seat_evidence_weight=None):
+def perturb(weights, origin, basis, seat_class, params, seat_evidence_weight=None, pooled_evidence_seats=0):
     shocks = params.get('_forecast_shocks')
     if not shocks:
         return weights
@@ -13,11 +13,15 @@ def perturb(weights, origin, basis, seat_class, params, seat_evidence_weight=Non
     else:
         source = 'GENERIC'
     settings = shocks['settings']
+    width = settings[f'PREF_{source}_LOG_SD']
+    sparse_width = shocks.get('sparse_pool_width')
+    if source == 'POOLED' and sparse_width is not None and 1 <= (pooled_evidence_seats or 0) <= 3:
+        width = sparse_width
     origin = 'IND' if origin.startswith('IND:') else origin
     values = {}
     for entity, value in weights.items():
         party = 'IND' if entity.startswith('IND:') else entity
-        tilt = settings[f'PREF_{source}_LOG_SD'] * shocks['origin'][origin][party]
+        tilt = width * shocks['origin'][origin][party]
         if party == 'ON':
             tilt += settings['PREF_CLASS_ON_LOG_SD'] * shocks['class_on'].get(seat_class, 0)
         values[entity] = value * math.exp(tilt)

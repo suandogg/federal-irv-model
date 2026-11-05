@@ -673,5 +673,6 @@ def get_preference_weights(*args, **kwargs):
     from .forecast_preferences import perturb
     weights = perturb(weights, kwargs['elim_party'], diagnostic.get('basis',''),
                       kwargs.get('seat_class',''), kwargs['params'],
-                      seat_evidence_weight=diagnostic.get('seat_evidence_weight'))
+                      seat_evidence_weight=diagnostic.get('seat_evidence_weight'),
+                      pooled_evidence_seats=diagnostic.get('pooled_evidence_seats', 0))
     return weights, diagnostic
